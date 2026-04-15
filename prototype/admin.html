@@ -1,0 +1,636 @@
+<!doctype html>
+<html lang="id">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Admin Components | Affiliate System</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Bootstrap CSS for Layout preservation -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            primary: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            },
+            secondary: {
+              50: '#f0fdfa',
+              500: '#14b8a6',
+              600: '#0d9488',
+              900: '#134e4a',
+            },
+            accent: {
+              500: '#f59e0b',
+              600: '#d97706',
+            },
+            slate: {
+              850: '#1e293b',
+              900: '#0f172a',
+            }
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'float-delayed': 'float 6s ease-in-out 3s infinite',
+            'blob': 'blob 7s infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            blob: {
+              '0%': { transform: 'translate(0px, 0px) scale(1)' },
+              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS Overrides (Tailwind inside Bootstrap) -->
+  <style type="text/tailwindcss">
+    @layer components {
+      body { @apply bg-slate-50 text-slate-700 font-sans; }
+
+      /* Base Bootstrap to Tailwind Mappings */
+      .card, .panel-card { @apply bg-white rounded-3xl border border-slate-100 shadow-sm hover-lift transition-all overflow-hidden relative; }
+      .card-header { @apply bg-transparent border-b border-slate-100 py-4 px-6; }
+      .card-body { @apply p-6; }
+
+      .btn { @apply px-6 py-2.5 rounded-full font-bold transition-all border-0 shadow-sm inline-flex items-center justify-center gap-2; }
+      .btn-sm { @apply px-4 py-1.5 text-sm; }
+      .btn-primary, .btn-critical { @apply ripple bg-primary-600 hover:bg-primary-700 text-white shadow-lg shadow-primary-500/30 hover:-translate-y-1 transform; }
+      .btn-outline-primary { @apply bg-white border border-slate-200 text-slate-700 hover:bg-slate-50; }
+      .btn-light { @apply bg-slate-100 text-slate-700 hover:bg-slate-200; }
+      
+      .form-control, .form-select { @apply w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-primary-200 focus:border-primary-500 shadow-none transition-all; }
+      .input-group-text { @apply bg-slate-50 border-slate-200 text-slate-400 rounded-xl px-4; }
+      .input-group .form-control { @apply border-l-0 rounded-l-none pl-0 bg-transparent; }
+      .input-group .input-group-text { @apply border-r-0 rounded-r-none pr-3 bg-transparent; }
+      .input-group { @apply bg-slate-50 border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-primary-200 focus-within:border-primary-500 transition-all overflow-hidden; }
+      .input-group > * { @apply border-none; }
+      
+      .navbar { @apply glass border-b border-slate-100 py-3; }
+      .navbar-brand { @apply font-bold text-2xl tracking-tight text-slate-900; }
+      .navbar-brand i { @apply text-primary-600; }
+      
+      h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { @apply font-bold text-slate-900; }
+      .text-muted, .text-secondary { @apply text-slate-500; }
+      .bg-soft { @apply bg-slate-50; }
+      .text-brand, .text-primary, .brand-primary { @apply text-primary-600; }
+      .shadow-soft { @apply shadow-sm; }
+    }
+
+    /* Globals */
+    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
+    .hover-lift { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+    .ripple { position: relative; overflow: hidden; }
+    .ripple::after { content: ""; display: block; position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; background-image: radial-gradient(circle, #fff 10%, transparent 10.01%); background-repeat: no-repeat; background-position: 50%; transform: scale(10, 10); opacity: 0; transition: transform .5s, opacity 1s; }
+    .ripple:active::after { transform: scale(0, 0); opacity: 0.3; transition: 0s; }
+    .text-gradient { background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(to right, #4f46e5, #0d9488); }
+  </style>
+
+</head>
+<body class="relative bg-slate-50 text-slate-700">
+
+  <!-- Decorative Abstract Background -->
+  <div class="fixed top-0 w-full h-full overflow-hidden z-[-1] pointer-events-none">
+    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-200"></div>
+  </div>
+
+  <a class="admin-skip-link" href="#mainContent">Lewati ke konten utama</a>
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar d-none d-lg-flex flex-column" aria-label="Navigasi admin">
+      <a href="admin.html" class="admin-sidebar__brand">
+        <span class="admin-sidebar__brand-mark" aria-hidden="true"><i data-lucide="shield-check"></i></span>
+        <span>
+          <small class="admin-sidebar__eyebrow">Affiliate Control</small>
+          <span>Admin Intelligence</span>
+        </span>
+      </a>
+
+      <nav class="admin-nav">
+        <a class="admin-nav__link is-active" href="admin.html"><i data-lucide="layout-dashboard"></i><span>Ringkasan Sistem</span></a>
+        <a class="admin-nav__link" href="#componentWorkbench"><i data-lucide="users"></i><span>Queue Affiliator</span></a>
+        <a class="admin-nav__link" href="#metricsGrid"><i data-lucide="wallet"></i><span>Statistik Komisi</span></a>
+        <a class="admin-nav__link" href="#systemPulse"><i data-lucide="activity"></i><span>System Pulse</span></a>
+        <a class="admin-nav__link" href="#quickActionCard"><i data-lucide="settings-2"></i><span>Quick Actions</span></a>
+      </nav>
+
+      <div class="admin-sidebar__footer mt-auto">
+        <div class="surface-card p-3">
+          <div class="d-flex align-items-center justify-content-between gap-3">
+            <div>
+              <p class="section-eyebrow mb-1">WCAG Ready</p>
+              <strong>Accessible UI Foundation</strong>
+            </div>
+            <span class="admin-pill admin-pill--success"><i data-lucide="check"></i>AA</span>
+          </div>
+          <p class="section-copy mt-3 mb-0">Focus indicator, keyboard support, feedback state, dan dark mode aktif pada halaman ini.</p>
+        </div>
+      </div>
+    </aside>
+
+    <div class="admin-main">
+      <header class="admin-topbar">
+        <div class="admin-topbar__intro">
+          <button class="admin-icon-button js-ripple d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileAdminNav" aria-label="Buka navigasi admin">
+            <i data-lucide="menu"></i>
+          </button>
+          <div>
+            <p class="admin-kicker">Interactive Admin UI</p>
+            <h1 class="admin-title" id="adminHeader">Komponen Admin Beautiful, Stateful, dan Production-Ready</h1>
+            <p class="admin-subtitle">Halaman ini menampilkan komponen HTML/CSS interaktif dengan dukungan dark mode, loading state, error state, empty state, WCAG-compliant contrast, keyboard navigation, ripple effects, dan feedback visual yang halus.</p>
+          </div>
+        </div>
+
+        <div class="admin-topbar__actions">
+          <button id="themeToggle" class="theme-toggle js-ripple" type="button" aria-pressed="false" aria-label="Aktifkan dark mode">
+            <span class="theme-toggle__icon" aria-hidden="true"></span>
+            <span class="theme-toggle__label">Dark Mode</span>
+          </button>
+          <button id="syncButton" class="admin-btn admin-btn--secondary js-ripple" type="button" data-loading-button data-loading-label="Menyinkronkan..." data-complete-message="Sinkronisasi data affiliate berhasil dijalankan.">
+            <i data-lucide="refresh-cw"></i>
+            <span>Sinkronkan Data</span>
+          </button>
+          <button id="priorityQueueButton" class="admin-btn admin-btn--primary js-ripple" type="button">
+            <i data-lucide="zap"></i>
+            <span>Proses Prioritas</span>
+          </button>
+        </div>
+      </header>
+
+      <main id="mainContent" class="admin-content">
+        <section class="surface-card admin-hero" id="heroSection" aria-labelledby="heroTitle">
+          <div class="admin-hero__layout">
+            <div>
+              <div class="admin-hero__badge-row">
+                <span class="admin-pill admin-pill--brand"><i data-lucide="eye"></i>Focus Visible</span>
+                <span class="admin-pill admin-pill--danger"><i data-lucide="star"></i>Micro-interactions</span>
+                <span class="admin-pill admin-pill--success"><i data-lucide="moon"></i>Dark Mode Ready</span>
+              </div>
+              <h2 class="admin-hero__title" id="heroTitle">Satu workbench untuk review affiliator, monitoring sistem, dan validasi state komponen.</h2>
+              <p class="admin-hero__copy">Semua komponen dirancang mobile-first dengan hierarchy yang jelas, depth halus, transisi minimal 220ms, dan visual feedback yang langsung terasa tanpa mengganggu alur kerja admin.</p>
+
+              <div class="admin-hero__actions">
+                <button class="admin-btn admin-btn--primary js-ripple" type="button" data-toast-message="Antrean approval diprioritaskan untuk proses batch.">
+                  <i data-lucide="shield"></i>
+                  <span>Prioritaskan Approval</span>
+                </button>
+                <button class="admin-btn admin-btn--ghost js-ripple" type="button" data-loading-button data-loading-label="Mengekspor..." data-complete-message="Laporan harian berhasil diekspor ke file CSV.">
+                  <i data-lucide="download"></i>
+                  <span>Export Laporan</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="admin-hero__stats">
+              <div class="glance-card">
+                <p class="section-eyebrow mb-1">SLA Approval</p>
+                <strong class="glance-card__value">1 Jam 24 Menit</strong>
+                <p class="glance-card__meta">Rata-rata waktu dari pendaftaran masuk sampai keputusan admin.</p>
+              </div>
+              <div class="glance-card">
+                <p class="section-eyebrow mb-1">System Health</p>
+                <strong class="glance-card__value">99.2% Stabil</strong>
+                <p class="glance-card__meta">Queue sinkron, webhook komisi, dan penarikan dana berada dalam status sehat.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="admin-metrics" id="metricsGrid" aria-label="Ringkasan metrik admin">
+          <article class="metric-card" tabindex="0">
+            <div class="metric-card__top">
+              <p class="metric-card__label">Affiliator Aktif</p>
+              <span class="metric-card__icon"><i data-lucide="users"></i></span>
+            </div>
+            <p class="metric-card__value">324</p>
+            <p class="metric-card__meta">Terhubung di dashboard dan siap menjalankan campaign.</p>
+            <span class="metric-card__trend metric-card__trend--success"><i data-lucide="trending-up"></i>+12.4% dari minggu lalu</span>
+          </article>
+
+          <article class="metric-card" tabindex="0">
+            <div class="metric-card__top">
+              <p class="metric-card__label">Pendaftaran Pending</p>
+              <span class="metric-card__icon"><i data-lucide="hourglass"></i></span>
+            </div>
+            <p class="metric-card__value" id="pendingMetricValue">4</p>
+            <p class="metric-card__meta">Perlu review manual sebelum akun dan komisi diaktifkan.</p>
+            <span class="metric-card__trend metric-card__trend--warning"><i data-lucide="triangle-alert"></i>2 prioritas tinggi</span>
+          </article>
+
+          <article class="metric-card" tabindex="0">
+            <div class="metric-card__top">
+              <p class="metric-card__label">Komisi Dibayar</p>
+              <span class="metric-card__icon"><i data-lucide="wallet"></i></span>
+            </div>
+            <p class="metric-card__value">Rp 125.000.000</p>
+            <p class="metric-card__meta">Sudah diproses ke rekening affiliator pada siklus bulan berjalan.</p>
+            <span class="metric-card__trend metric-card__trend--success"><i data-lucide="trending-up"></i>98.4% settlement rate</span>
+          </article>
+
+          <article class="metric-card" tabindex="0">
+            <div class="metric-card__top">
+              <p class="metric-card__label">Alert Kritis</p>
+              <span class="metric-card__icon"><i data-lucide="bell-ring"></i></span>
+            </div>
+            <p class="metric-card__value">3</p>
+            <p class="metric-card__meta">Penarikan dana bernilai besar menunggu validasi lanjutan.</p>
+            <span class="metric-card__trend metric-card__trend--danger"><i data-lucide="shield-x"></i>Butuh tindakan hari ini</span>
+          </article>
+        </section>
+
+        <div class="row g-4 align-items-start">
+          <div class="col-12 col-xxl-8">
+            <section class="surface-card admin-workbench" id="componentWorkbench" aria-labelledby="stateWorkbenchTitle">
+              <div class="section-header">
+                <div>
+                  <p class="section-eyebrow">Stateful Component Demo</p>
+                  <h2 class="section-title" id="stateWorkbenchTitle">Review queue dengan loading, error, empty, dan data aktif</h2>
+                  <p class="section-copy">Gunakan search, sorting, tab states, dan tombol aksi untuk menguji perilaku komponen secara real-time.</p>
+                </div>
+                <div class="section-header__meta">
+                  <span class="counter-badge"><i data-lucide="list-filter"></i><span id="visibleResultCount">4 data tampil</span></span>
+                  <span class="admin-pill admin-pill--brand"><i data-lucide="keyboard"></i>Keyboard Ready</span>
+                </div>
+              </div>
+
+              <div class="toolbar-grid">
+                <div class="field-group">
+                  <label class="field-label" for="reviewSearch">Cari affiliator atau tipe akun</label>
+                  <div class="field-wrap">
+                    <i class="field-icon" data-lucide="search"></i>
+                    <input id="reviewSearch" class="field-control" type="search" placeholder="Contoh: Dimas, alumni, pending" aria-describedby="reviewSearchHint">
+                  </div>
+                  <p class="field-hint" id="reviewSearchHint">Filtering berjalan instant dan tetap aksesibel untuk keyboard dan screen reader.</p>
+                </div>
+
+                <div class="field-group">
+                  <label class="field-label" for="reviewSort">Urutkan data</label>
+                  <select id="reviewSort" class="field-select" aria-label="Urutkan data review">
+                    <option value="recent">Terbaru masuk</option>
+                    <option value="highest">Komisi tertinggi</option>
+                    <option value="priority">Prioritas tinggi dulu</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="toolbar-row mt-4">
+                <label class="toggle-card" for="priorityOnly">
+                  <input id="priorityOnly" type="checkbox" aria-controls="panel-live">
+                  <span class="toggle-track" aria-hidden="true"></span>
+                  <span class="toggle-copy">
+                    <strong>Tampilkan hanya prioritas tinggi</strong>
+                    <span>Gunakan untuk mempercepat review harian.</span>
+                  </span>
+                </label>
+
+                <div class="admin-hero__actions my-0">
+                  <button class="admin-btn admin-btn--ghost js-ripple" type="button" id="resetFiltersButton" data-reset-filters>
+                    <i data-lucide="rotate-ccw"></i>
+                    <span>Reset Filter</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="state-tablist" role="tablist" aria-label="Pilih state komponen data queue">
+                <button class="state-tab" id="tab-live" type="button" role="tab" aria-selected="true" aria-controls="panel-live">Data Aktif</button>
+                <button class="state-tab" id="tab-loading" type="button" role="tab" aria-selected="false" aria-controls="panel-loading" tabindex="-1">Loading</button>
+                <button class="state-tab" id="tab-error" type="button" role="tab" aria-selected="false" aria-controls="panel-error" tabindex="-1">Error</button>
+                <button class="state-tab" id="tab-empty" type="button" role="tab" aria-selected="false" aria-controls="panel-empty" tabindex="-1">Empty</button>
+              </div>
+
+              <div class="panel-stack">
+                <section class="state-panel" id="panel-live" role="tabpanel" aria-labelledby="tab-live" tabindex="0">
+                  <div class="review-table-wrap">
+                    <table class="review-table">
+                      <caption class="sr-only">Antrian review affiliator terbaru</caption>
+                      <thead>
+                        <tr>
+                          <th scope="col">Affiliator</th>
+                          <th scope="col">Priority</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Potensi Komisi</th>
+                          <th scope="col" class="text-end">Aksi</th>
+                        </tr>
+                      </thead>
+                      <tbody id="reviewTableBody">
+                        <tr data-name="dimas pratama alumni pending" data-type="alumni" data-priority="high" data-date="2026-04-12T14:00:00" data-amount="950000" data-status-state="pending">
+                          <td class="name-cell">
+                            <strong>Dimas Pratama</strong>
+                            <small>Upload identitas lengkap • Masuk 12 Apr 2026</small>
+                          </td>
+                          <td><span class="priority-flag"><i data-lucide="flame"></i>High Priority</span></td>
+                          <td><span class="status-chip status-chip--pending" data-status>Pending</span></td>
+                          <td class="amount-cell">
+                            <strong>Rp 950.000</strong>
+                            <small>Batch alumni AMC</small>
+                          </td>
+                          <td>
+                            <div class="review-actions">
+                              <button class="mini-btn mini-btn--approve js-ripple js-row-action" type="button" data-action="approve" data-name="Dimas Pratama" aria-label="Approve Dimas Pratama">Approve</button>
+                              <button class="mini-btn mini-btn--review js-ripple js-row-action" type="button" data-action="review" data-name="Dimas Pratama" aria-label="Review manual Dimas Pratama">Review</button>
+                              <button class="mini-btn mini-btn--reject js-ripple js-row-action" type="button" data-action="reject" data-name="Dimas Pratama" aria-label="Reject Dimas Pratama">Reject</button>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr data-name="rina safitri reguler pending" data-type="reguler" data-priority="normal" data-date="2026-04-11T10:00:00" data-amount="320000" data-status-state="pending">
+                          <td class="name-cell">
+                            <strong>Rina Safitri</strong>
+                            <small>Butuh verifikasi nomor rekening • Masuk 11 Apr 2026</small>
+                          </td>
+                          <td><span class="priority-flag priority-flag--normal"><i data-lucide="minus"></i>Normal</span></td>
+                          <td><span class="status-chip status-chip--pending" data-status>Pending</span></td>
+                          <td class="amount-cell">
+                            <strong>Rp 320.000</strong>
+                            <small>Referral buku dan kelas</small>
+                          </td>
+                          <td>
+                            <div class="review-actions">
+                              <button class="mini-btn mini-btn--approve js-ripple js-row-action" type="button" data-action="approve" data-name="Rina Safitri" aria-label="Approve Rina Safitri">Approve</button>
+                              <button class="mini-btn mini-btn--review js-ripple js-row-action" type="button" data-action="review" data-name="Rina Safitri" aria-label="Review manual Rina Safitri">Review</button>
+                              <button class="mini-btn mini-btn--reject js-ripple js-row-action" type="button" data-action="reject" data-name="Rina Safitri" aria-label="Reject Rina Safitri">Reject</button>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr data-name="hafiz rasyid alumni approved" data-type="alumni" data-priority="high" data-date="2026-04-09T08:15:00" data-amount="1200000" data-status-state="approved">
+                          <td class="name-cell">
+                            <strong>Hafiz Rasyid</strong>
+                            <small>Semua dokumen tervalidasi • Masuk 09 Apr 2026</small>
+                          </td>
+                          <td><span class="priority-flag"><i data-lucide="flame"></i>High Priority</span></td>
+                          <td><span class="status-chip status-chip--success" data-status>Approved</span></td>
+                          <td class="amount-cell">
+                            <strong>Rp 1.200.000</strong>
+                            <small>Kelas privat AMC</small>
+                          </td>
+                          <td>
+                            <div class="review-actions">
+                              <button class="mini-btn mini-btn--review js-ripple js-row-action" type="button" data-action="review" data-name="Hafiz Rasyid" aria-label="Review Hafiz Rasyid">Review Log</button>
+                            </div>
+                          </td>
+                        </tr>
+
+                        <tr data-name="maya artanti reguler pending" data-type="reguler" data-priority="normal" data-date="2026-04-08T17:20:00" data-amount="210000" data-status-state="pending">
+                          <td class="name-cell">
+                            <strong>Maya Artanti</strong>
+                            <small>Menunggu upload KTP ulang • Masuk 08 Apr 2026</small>
+                          </td>
+                          <td><span class="priority-flag priority-flag--normal"><i data-lucide="minus"></i>Normal</span></td>
+                          <td><span class="status-chip status-chip--pending" data-status>Pending</span></td>
+                          <td class="amount-cell">
+                            <strong>Rp 210.000</strong>
+                            <small>Paket buku affiliate</small>
+                          </td>
+                          <td>
+                            <div class="review-actions">
+                              <button class="mini-btn mini-btn--approve js-ripple js-row-action" type="button" data-action="approve" data-name="Maya Artanti" aria-label="Approve Maya Artanti">Approve</button>
+                              <button class="mini-btn mini-btn--review js-ripple js-row-action" type="button" data-action="review" data-name="Maya Artanti" aria-label="Review manual Maya Artanti">Review</button>
+                              <button class="mini-btn mini-btn--reject js-ripple js-row-action" type="button" data-action="reject" data-name="Maya Artanti" aria-label="Reject Maya Artanti">Reject</button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div class="filter-empty mt-4" id="filterEmptyState" hidden>
+                    <span class="filter-empty__icon" aria-hidden="true"><i data-lucide="search-x"></i></span>
+                    <h3>Tidak ada data yang cocok</h3>
+                    <p>Coba ubah keyword pencarian, nonaktifkan filter prioritas, atau reset sorting untuk melihat antrean lain.</p>
+                    <button class="admin-btn admin-btn--ghost js-ripple" type="button" id="resetFiltersButtonSecondary" data-reset-filters>
+                      <i data-lucide="rotate-ccw"></i>
+                      <span>Reset Sekarang</span>
+                    </button>
+                  </div>
+                </section>
+
+                <section class="state-panel" id="panel-loading" role="tabpanel" aria-labelledby="tab-loading" tabindex="0" hidden aria-hidden="true">
+                  <div class="skeleton-stack" role="status" aria-live="polite" aria-label="Sedang memuat antrian review affiliator">
+                    <div class="skeleton-row">
+                      <div class="skeleton-line skeleton-line--lg"></div>
+                      <div class="skeleton-line skeleton-line--md"></div>
+                      <div class="d-flex flex-wrap gap-2">
+                        <div class="skeleton-badge"></div>
+                        <div class="skeleton-badge"></div>
+                      </div>
+                    </div>
+                    <div class="skeleton-row">
+                      <div class="skeleton-line skeleton-line--lg"></div>
+                      <div class="skeleton-line skeleton-line--sm"></div>
+                      <div class="d-flex flex-wrap gap-2">
+                        <div class="skeleton-badge"></div>
+                        <div class="skeleton-badge"></div>
+                      </div>
+                    </div>
+                    <div class="skeleton-row">
+                      <div class="skeleton-line skeleton-line--lg"></div>
+                      <div class="skeleton-line skeleton-line--md"></div>
+                      <div class="d-flex flex-wrap gap-2">
+                        <div class="skeleton-badge"></div>
+                        <div class="skeleton-badge"></div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="state-panel" id="panel-error" role="tabpanel" aria-labelledby="tab-error" tabindex="0" hidden aria-hidden="true">
+                  <div class="state-card state-card--error" role="alert">
+                    <span class="state-card__icon" aria-hidden="true"><i data-lucide="triangle-alert"></i></span>
+                    <h3>Sinkronisasi queue gagal diproses</h3>
+                    <p>Server webhook sedang tidak merespons. Anda tetap dapat meninjau data lokal atau mencoba muat ulang komponen setelah koneksi kembali stabil.</p>
+                    <div class="admin-hero__actions my-0 justify-content-center">
+                      <button class="admin-btn admin-btn--primary js-ripple" type="button" id="retryLoadButton">
+                        <i data-lucide="refresh-cw"></i>
+                        <span>Coba Lagi</span>
+                      </button>
+                      <button class="admin-btn admin-btn--ghost js-ripple" type="button" data-toast-message="Log error disimpan untuk audit tim teknis.">
+                        <i data-lucide="triangle-alert"></i>
+                        <span>Simpan Error Log</span>
+                      </button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="state-panel" id="panel-empty" role="tabpanel" aria-labelledby="tab-empty" tabindex="0" hidden aria-hidden="true">
+                  <div class="state-card state-card--empty">
+                    <span class="state-card__icon" aria-hidden="true"><i data-lucide="inbox"></i></span>
+                    <h3>Belum ada antrean baru hari ini</h3>
+                    <p>Semua approval sudah selesai ditangani. Anda bisa mengalihkan fokus ke laporan performa, pengaturan campaign, atau memuat data contoh untuk demo presentasi.</p>
+                    <div class="admin-hero__actions my-0 justify-content-center">
+                      <button class="admin-btn admin-btn--secondary js-ripple" type="button" id="loadSampleButton">
+                        <i data-lucide="database"></i>
+                        <span>Muat Data Contoh</span>
+                      </button>
+                      <button class="admin-btn admin-btn--ghost js-ripple" type="button" data-loading-button data-loading-label="Membuat ringkasan..." data-complete-message="Ringkasan harian berhasil dibuat untuk tim operasional.">
+                        <i data-lucide="file-text"></i>
+                        <span>Buat Daily Summary</span>
+                      </button>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </section>
+          </div>
+
+          <div class="col-12 col-xxl-4">
+            <div class="admin-stack">
+              <section class="surface-card admin-side-card" id="systemPulse" aria-labelledby="systemPulseTitle">
+                <p class="section-eyebrow">System Pulse</p>
+                <h2 class="section-title" id="systemPulseTitle">Health signals dan SLA operasional</h2>
+                <p class="section-copy">Komponen progress, badges, dan alert card berikut dirancang untuk menyampaikan status sistem dengan cepat dan tetap terbaca di light maupun dark mode.</p>
+
+                <ul class="signal-list">
+                  <li class="signal-item">
+                    <div class="signal-item__top">
+                      <strong>Webhook Komisi</strong>
+                      <span class="status-chip status-chip--success">Normal</span>
+                    </div>
+                    <p class="signal-item__meta">1.248 event sukses • latency median 380ms</p>
+                    <div class="progress-track" aria-hidden="true"><span class="progress-fill" style="width: 92%;"></span></div>
+                  </li>
+
+                  <li class="signal-item">
+                    <div class="signal-item__top">
+                      <strong>SLA Approval</strong>
+                      <span class="status-chip status-chip--pending">Perlu dipantau</span>
+                    </div>
+                    <p class="signal-item__meta">4 antrean mendekati batas SLA internal 2 jam</p>
+                    <div class="progress-track" aria-hidden="true"><span class="progress-fill" style="width: 68%;"></span></div>
+                  </li>
+
+                  <li class="signal-item">
+                    <div class="signal-item__top">
+                      <strong>Penarikan Dana</strong>
+                      <span class="status-chip status-chip--danger">Kritis</span>
+                    </div>
+                    <p class="signal-item__meta">3 transaksi nominal besar perlu validasi kedua</p>
+                    <div class="progress-track" aria-hidden="true"><span class="progress-fill" style="width: 48%;"></span></div>
+                  </li>
+                </ul>
+              </section>
+
+              <section class="surface-card admin-side-card" id="quickActionCard" aria-labelledby="quickActionTitle">
+                <p class="section-eyebrow">Quick Actions</p>
+                <h2 class="section-title" id="quickActionTitle">Reusable interactive components</h2>
+                <p class="section-copy">Action card berikut menggabungkan button loading, ghost action, success feedback, dan subtle motion untuk menunjukkan struktur komponen yang siap dipakai ulang.</p>
+
+                <div class="quick-action-list">
+                  <article class="quick-action" tabindex="0">
+                    <div class="quick-action__copy">
+                      <strong>Kirim Reminder Verifikasi</strong>
+                      <span>Notifikasi WA dan email untuk affiliator yang belum lengkapi dokumen.</span>
+                    </div>
+                    <button class="admin-btn admin-btn--ghost js-ripple" type="button" data-loading-button data-loading-label="Mengirim reminder..." data-complete-message="Reminder berhasil dikirim ke 18 affiliator.">
+                      <i data-lucide="send"></i>
+                      <span>Kirim</span>
+                    </button>
+                  </article>
+
+                  <article class="quick-action" tabindex="0">
+                    <div class="quick-action__copy">
+                      <strong>Generate Laporan Settlement</strong>
+                      <span>Siapkan file ringkasan komisi cair untuk finance dan audit internal.</span>
+                    </div>
+                    <button class="admin-btn admin-btn--secondary js-ripple" type="button" data-loading-button data-loading-label="Menyusun laporan..." data-complete-message="Laporan settlement bulan berjalan berhasil dibuat.">
+                      <i data-lucide="file-text"></i>
+                      <span>Generate</span>
+                    </button>
+                  </article>
+
+                  <article class="quick-action" tabindex="0">
+                    <div class="quick-action__copy">
+                      <strong>Audit Prioritas Tinggi</strong>
+                      <span>Filter otomatis semua queue high priority untuk sesi review cepat.</span>
+                    </div>
+                    <button class="admin-btn admin-btn--primary js-ripple" type="button" data-toast-message="Mode audit prioritas diaktifkan untuk sesi review saat ini.">
+                      <i data-lucide="funnel"></i>
+                      <span>Audit</span>
+                    </button>
+                  </article>
+                </div>
+
+                <div class="insight-note">
+                  <strong class="d-block mb-1">Production-ready details</strong>
+                  <span>Semua komponen menggunakan naming convention konsisten, state terpisah, proper ARIA semantics, dan transisi halus untuk hover, focus, serta active state.</span>
+                </div>
+              </section>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-start admin-offcanvas d-lg-none" tabindex="-1" id="mobileAdminNav" aria-labelledby="mobileAdminNavTitle">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title h5 mb-0" id="mobileAdminNavTitle">Menu Admin</h2>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Tutup menu"></button>
+    </div>
+    <div class="offcanvas-body">
+      <nav class="admin-nav">
+        <a class="admin-nav__link is-active" href="admin.html"><i data-lucide="layout-dashboard"></i><span>Ringkasan Sistem</span></a>
+        <a class="admin-nav__link" href="#componentWorkbench"><i data-lucide="users"></i><span>Queue Affiliator</span></a>
+        <a class="admin-nav__link" href="#metricsGrid"><i data-lucide="wallet"></i><span>Statistik Komisi</span></a>
+        <a class="admin-nav__link" href="#systemPulse"><i data-lucide="activity"></i><span>System Pulse</span></a>
+        <a class="admin-nav__link" href="#quickActionCard"><i data-lucide="settings-2"></i><span>Quick Actions</span></a>
+      </nav>
+    </div>
+  </div>
+
+  <div id="toastStack" class="toast-stack" aria-live="polite" aria-relevant="additions" aria-atomic="false"></div>
+
+  <button id="tourStartBtn" class="btn btn-critical tour-fab d-flex align-items-center gap-1"><i data-lucide="compass"></i>Mulai Tur Halaman Admin</button>
+
+  <script>
+    window.affiliateTourConfig = {
+      flow: "admin-affiliate",
+      steps: [
+        { selector: "#adminHeader", title: "Interactive Admin UI", content: "Header ini memperlihatkan topbar dengan dark mode, keyboard-ready action button, dan hierarchy yang jelas untuk admin operasional." },
+        { selector: "#heroSection", title: "Hero Summary", content: "Komponen hero merangkum state sistem, CTA penting, dan ringkasan SLA dalam satu blok visual yang kuat." },
+        { selector: "#metricsGrid", title: "Metric Cards", content: "KPI cards menggunakan contrast aman, hover feedback, dan emphasis visual yang konsisten di semua breakpoint." },
+        { selector: "#componentWorkbench", title: "State Workbench", content: "Di sini admin bisa menguji loaded, loading, error, dan empty state sekaligus, lengkap dengan filter, sorting, dan aksi baris." },
+        { selector: "#systemPulse", title: "System Pulse", content: "Progress bar, alert chips, dan health cards dirancang untuk memberi insight cepat tanpa membebani layar admin." }
+      ]
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="assets/js/admin-interactive-ui.js"></script>
+  <script src="assets/js/affiliate-tour.js"></script>
+</body>
+</html>
