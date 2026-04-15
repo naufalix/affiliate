@@ -1,196 +1,114 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profil Affiliate</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Bootstrap CSS for Layout preservation -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Configuration -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
+          fontFamily: { sans: ["Inter", "sans-serif"] },
           colors: {
-            primary: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              800: '#3730a3',
-              900: '#312e81',
-            },
-            secondary: {
-              50: '#f0fdfa',
-              500: '#14b8a6',
-              600: '#0d9488',
-              900: '#134e4a',
-            },
-            accent: {
-              500: '#f59e0b',
-              600: '#d97706',
-            },
-            slate: {
-              850: '#1e293b',
-              900: '#0f172a',
-            }
+            primary: { 50: "#eef2ff", 100: "#e0e7ff", 500: "#6366f1", 600: "#4f46e5", 700: "#4338ca", 800: "#3730a3", 900: "#312e81" },
+            secondary: { 50: "#f0fdfa", 500: "#14b8a6", 600: "#0d9488", 900: "#134e4a" },
+            accent: { 500: "#f59e0b", 600: "#d97706" },
+            slate: { 850: "#1e293b" }
           },
-          animation: {
-            'float': 'float 6s ease-in-out infinite',
-            'float-delayed': 'float 6s ease-in-out 3s infinite',
-            'blob': 'blob 7s infinite',
-          },
+          animation: { blob: "blob 7s infinite" },
           keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0)' },
-              '50%': { transform: 'translateY(-20px)' },
-            },
             blob: {
-              '0%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              "0%": { transform: "translate(0px, 0px) scale(1)" },
+              "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+              "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+              "100%": { transform: "translate(0px, 0px) scale(1)" }
             }
           }
         }
       }
-    }
+    };
   </script>
-
-  <!-- Custom CSS Overrides (Tailwind inside Bootstrap) -->
-  <style type="text/tailwindcss">
-    @layer components {
-      body { @apply bg-slate-50 text-slate-700 font-sans; }
-
-      /* Base Bootstrap to Tailwind Mappings */
-      .card, .panel-card { @apply bg-white rounded-3xl border border-slate-100 shadow-sm hover-lift transition-all overflow-hidden relative; }
-      .card-header { @apply bg-transparent border-b border-slate-100 py-4 px-6; }
-      .card-body { @apply p-6; }
-
-      .btn { @apply px-6 py-2.5 rounded-full font-bold transition-all border-0 shadow-sm inline-flex items-center justify-center gap-2; }
-      .btn-sm { @apply px-4 py-1.5 text-sm; }
-      .btn-primary, .btn-critical { @apply ripple bg-primary-600 hover:bg-primary-700 text-white shadow-lg shadow-primary-500/30 hover:-translate-y-1 transform; }
-      .btn-outline-primary { @apply bg-white border border-slate-200 text-slate-700 hover:bg-slate-50; }
-      .btn-light { @apply bg-slate-100 text-slate-700 hover:bg-slate-200; }
-      
-      .form-control, .form-select { @apply w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-primary-200 focus:border-primary-500 shadow-none transition-all; }
-      .input-group-text { @apply bg-slate-50 border-slate-200 text-slate-400 rounded-xl px-4; }
-      .input-group .form-control { @apply border-l-0 rounded-l-none pl-0 bg-transparent; }
-      .input-group .input-group-text { @apply border-r-0 rounded-r-none pr-3 bg-transparent; }
-      .input-group { @apply bg-slate-50 border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-primary-200 focus-within:border-primary-500 transition-all overflow-hidden; }
-      .input-group > * { @apply border-none; }
-      
-      .navbar { @apply glass border-b border-slate-100 py-3; }
-      .navbar-brand { @apply font-bold text-2xl tracking-tight text-slate-900; }
-      .navbar-brand i { @apply text-primary-600; }
-      
-      h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { @apply font-bold text-slate-900; }
-      .text-muted, .text-secondary { @apply text-slate-500; }
-      .bg-soft { @apply bg-slate-50; }
-      .text-brand, .text-primary, .brand-primary { @apply text-primary-600; }
-      .shadow-soft { @apply shadow-sm; }
-    }
-
-    /* Globals */
-    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
-    .hover-lift { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
-    .ripple { position: relative; overflow: hidden; }
-    .ripple::after { content: ""; display: block; position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; background-image: radial-gradient(circle, #fff 10%, transparent 10.01%); background-repeat: no-repeat; background-position: 50%; transform: scale(10, 10); opacity: 0; transition: transform .5s, opacity 1s; }
-    .ripple:active::after { transform: scale(0, 0); opacity: 0.3; transition: 0s; }
-    .text-gradient { background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(to right, #4f46e5, #0d9488); }
-  </style>
-
+  <link rel="stylesheet" href="assets/css/tailwind-prototype.css">
 </head>
-<body class="relative bg-slate-50 text-slate-700">
-
-  <!-- Decorative Abstract Background -->
-  <div class="fixed top-0 w-full h-full overflow-hidden z-[-1] pointer-events-none">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-200"></div>
+<body class="relative min-h-screen bg-slate-50 text-slate-700">
+  <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div class="absolute -left-24 -top-20 h-80 w-80 rounded-full bg-primary-200/70 blur-3xl animate-blob"></div>
+    <div class="absolute -bottom-24 -right-16 h-80 w-80 rounded-full bg-secondary-200/70 blur-3xl animate-blob"></div>
   </div>
 
-  <div class="d-flex">
-    <aside class="app-sidebar d-none d-lg-flex flex-column p-3">
-      <a href="dashboard-peserta.html" class="fw-bold text-decoration-none text-brand mb-3 d-flex align-items-center gap-2"><i data-lucide="network"></i>Affiliate Panel</a>
-      <nav class="nav flex-column gap-1">
-        <a class="nav-link nav-pill" href="dashboard-peserta.html">Dashboard</a>
-        <a class="nav-link nav-pill" href="affiliator-links.html">Link Referral</a>
-        <a class="nav-link nav-pill" href="affiliator-commissions.html">Statistik Komisi</a>
-        <a class="nav-link nav-pill" href="affiliator-withdrawals.html">Penarikan Dana</a>
-        <a class="nav-link nav-pill" href="affiliator-marketing.html">Materi Marketing</a>
-        <a class="nav-link nav-pill" href="affiliator-leaderboard.html">Leaderboard</a>
-        <a class="nav-link nav-pill active" href="affiliator-profile.html">Profil Akun</a>
+  <div class="app-layout">
+    <aside class="app-sidebar hidden flex-col p-4 lg:flex">
+      <a href="dashboard-peserta.html" class="mb-4 inline-flex items-center gap-2 text-base font-extrabold text-slate-900">
+        <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary-600 text-white shadow-lg shadow-primary-500/30"><i data-lucide="network" class="h-4 w-4"></i></span>
+        Affiliate Panel
+      </a>
+      <nav class="grid gap-1">
+        <a class="nav-pill" href="dashboard-peserta.html">Dashboard</a>
+        <a class="nav-pill" href="affiliator-links.html">Link Referral</a>
+        <a class="nav-pill" href="affiliator-commissions.html">Statistik Komisi</a>
+        <a class="nav-pill" href="affiliator-withdrawals.html">Penarikan Dana</a>
+        <a class="nav-pill" href="affiliator-marketing.html">Materi Marketing</a>
+        <a class="nav-pill" href="affiliator-leaderboard.html">Leaderboard</a>
+        <a class="nav-pill active" href="affiliator-profile.html">Profil Akun</a>
       </nav>
     </aside>
 
-    <div class="flex-grow-1 min-vh-100">
-      <header class="app-topbar px-3 py-2 d-flex justify-content-between align-items-center">
-        <strong id="profileHeader">Profil dan Keamanan Akun</strong>
-        <span class="small">Ahmad Setiawan</span>
+    <div class="app-main">
+      <header class="app-topbar flex items-center justify-between px-4 py-3 sm:px-6">
+        <strong id="profileHeader" class="text-slate-900">Profil dan Keamanan Akun</strong>
+        <span class="text-sm">Ahmad Setiawan</span>
       </header>
 
-      <main class="p-3 p-lg-4">
-        <div class="container-fluid px-0">
-          <div class="alert alert-primary border-0 shadow-soft  text-white rounded-[1.15rem]" id="verifiedInfo">Status akun: Verified Alumni. Pastikan data rekening selalu aktif untuk penarikan dana.</div>
+      <main class="p-4 sm:p-6">
+        <div id="verifiedInfo" class="page-hero rounded-2xl px-4 py-3 text-sm font-medium">Status akun: Verified Alumni. Pastikan data rekening selalu aktif untuk penarikan dana.</div>
 
-          <div class="row g-3">
-            <div class="col-lg-6" id="personalForm">
-              <div class="panel-card p-3 h-100">
-                <h2 class="h6 fw-bold">Data Personal</h2>
-                <div class="mb-2"><label class="form-label">Nama Lengkap</label><input class="form-control" value="Ahmad Setiawan"></div>
-                <div class="mb-2"><label class="form-label">Email</label><input class="form-control" value="ahmad@email.com" disabled></div>
-                <div class="mb-2"><label class="form-label">WhatsApp</label><input class="form-control" value="081234567890"></div>
-                <button class="btn btn-brand">Simpan Data</button>
-              </div>
+        <div class="mt-4 grid gap-3 lg:grid-cols-2">
+          <section id="personalForm" class="panel-card p-4">
+            <h2 class="text-base font-bold text-slate-900">Data Personal</h2>
+            <div class="mt-3 space-y-3">
+              <div><label class="mb-1.5 block text-sm font-semibold text-slate-700">Nama Lengkap</label><input class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" value="Ahmad Setiawan"></div>
+              <div><label class="mb-1.5 block text-sm font-semibold text-slate-700">Email</label><input class="w-full cursor-not-allowed rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-500" value="ahmad@email.com" disabled></div>
+              <div><label class="mb-1.5 block text-sm font-semibold text-slate-700">WhatsApp</label><input class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" value="081234567890"></div>
+              <button class="ripple inline-flex items-center justify-center rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary-500/30">Simpan Data</button>
             </div>
+          </section>
 
-            <div class="col-lg-6" id="bankForm">
-              <div class="panel-card p-3 h-100">
-                <h2 class="h6 fw-bold">Rekening Pencairan</h2>
-                <div class="mb-2"><label class="form-label">Bank</label><select class="form-select"><option>BCA</option><option>Mandiri</option></select></div>
-                <div class="mb-2"><label class="form-label">Nomor Rekening</label><input class="form-control" value="0918273645"></div>
-                <div class="mb-2"><label class="form-label">Atas Nama</label><input class="form-control" value="Ahmad Setiawan"></div>
-                <button class="btn btn-brand">Update Rekening</button>
-              </div>
+          <section id="bankForm" class="panel-card p-4">
+            <h2 class="text-base font-bold text-slate-900">Rekening Pencairan</h2>
+            <div class="mt-3 space-y-3">
+              <div><label class="mb-1.5 block text-sm font-semibold text-slate-700">Bank</label><select class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm"><option>BCA</option><option>Mandiri</option></select></div>
+              <div><label class="mb-1.5 block text-sm font-semibold text-slate-700">Nomor Rekening</label><input class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" value="0918273645"></div>
+              <div><label class="mb-1.5 block text-sm font-semibold text-slate-700">Atas Nama</label><input class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" value="Ahmad Setiawan"></div>
+              <button class="ripple inline-flex items-center justify-center rounded-xl border border-primary-200 bg-primary-50 px-4 py-2.5 text-sm font-bold text-primary-700">Update Rekening</button>
             </div>
-
-            <div class="col-12" id="passwordForm">
-              <div class="panel-card p-3">
-                <h2 class="h6 fw-bold">Keamanan Password</h2>
-                <div class="row g-2">
-                  <div class="col-md-4"><input class="form-control" placeholder="Password saat ini" type="password"></div>
-                  <div class="col-md-4"><input class="form-control" placeholder="Password baru" type="password"></div>
-                  <div class="col-md-4"><input class="form-control" placeholder="Konfirmasi" type="password"></div>
-                </div>
-                <button class="btn btn-critical mt-2">Ubah Password</button>
-              </div>
-            </div>
-          </div>
+          </section>
         </div>
+
+        <section id="passwordForm" class="panel-card mt-4 p-4">
+          <h2 class="text-base font-bold text-slate-900">Keamanan Password</h2>
+          <div class="mt-3 grid gap-3 md:grid-cols-3">
+            <input class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Password saat ini" type="password">
+            <input class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Password baru" type="password">
+            <input class="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm" placeholder="Konfirmasi" type="password">
+          </div>
+          <button class="ripple mt-3 inline-flex items-center justify-center rounded-xl bg-primary-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary-500/30">Ubah Password</button>
+        </section>
       </main>
     </div>
   </div>
 
-  <button id="tourStartBtn" class="btn btn-critical tour-fab d-flex align-items-center gap-1"><i data-lucide="signpost"></i>Mulai Tur Alur Lengkap</button>
+  <button id="tourStartBtn" class="tour-fab ripple inline-flex items-center gap-2 rounded-full bg-primary-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary-500/30 hover:bg-primary-700">
+    <i data-lucide="signpost" class="h-4 w-4"></i>
+    Mulai Tur Alur Lengkap
+  </button>
+
   <script>
     window.affiliateTourConfig = {
       flow: "aff-profile",
@@ -203,8 +121,6 @@
       ]
     };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
   <script>lucide.createIcons();</script>
   <script src="assets/js/affiliate-tour.js"></script>
 </body>

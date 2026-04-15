@@ -159,45 +159,7 @@
 
 <body class="relative bg-slate-50">
 
-    <!-- Navigation -->
-    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 glass border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <a href="index.html" class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
-                    <div
-                        class="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center text-white shadow-lg shadow-primary-500/30">
-                        <i data-lucide="brain-circuit" class="w-6 h-6"></i>
-                    </div>
-                    <span class="font-bold text-2xl tracking-tight text-slate-900">Firman<span
-                            class="text-primary-600">Pratama</span></span>
-                </a>
-
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="index.html#kategori"
-                        class="text-slate-600 hover:text-primary-600 font-medium transition-colors">Program</a>
-                    <a href="index.html#buku"
-                        class="text-slate-600 hover:text-primary-600 font-medium transition-colors">Buku</a>
-                    <a href="index.html#testimoni"
-                        class="text-slate-600 hover:text-primary-600 font-medium transition-colors">Testimoni</a>
-                    <div class="h-6 w-px bg-slate-200"></div>
-                    <a href="login.html"
-                        class="text-slate-600 hover:text-primary-600 font-medium transition-colors">Member Area</a>
-                    <a href="https://wa.me/6281230633464"
-                        class="ripple bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-full font-medium transition-colors shadow-lg shadow-primary-500/30">Konsultasi
-                        Sekarang</a>
-                </div>
-
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn"
-                        class="text-slate-600 hover:text-primary-600 focus:outline-none p-2 rounded-lg hover:bg-slate-100 transition-colors">
-                        <i data-lucide="menu" class="w-6 h-6"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <div id="app-header"></div>
 
     <!-- Main Content Layer -->
     <main class="pt-32 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -309,81 +271,31 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-slate-950 text-slate-300 py-16 border-t border-slate-800 mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                <div class="col-span-1 md:col-span-2 lg:col-span-1">
-                    <div class="flex items-center gap-2 mb-6">
-                        <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white">
-                            <i data-lucide="brain-circuit" class="w-5 h-5"></i>
-                        </div>
-                        <span class="font-bold text-xl text-white">Firman<span
-                                class="text-primary-500">Pratama</span></span>
-                    </div>
-                    <p class="text-sm mb-6 text-slate-400 leading-relaxed">Pakar Pikiran No.1 Indonesia. Penulis Buku,
-                        Konsultan
-                        Bisnis & Pencipta Metode AMC.</p>
-                </div>
+    <div id="app-footer"></div>
 
-                <div>
-                    <h4 class="text-white font-bold mb-6">Layanan Pilihan</h4>
-                    <ul class="space-y-4 text-sm">
-                        <li><a href="#" class="hover:text-primary-400 transition-colors">Kelas Biasa AMC</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition-colors">Kelas Privat AMC</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition-colors">Kelas Platinum</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition-colors">Pembelian Karya</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold mb-6">Komunitas Web</h4>
-                    <ul class="space-y-4 text-sm">
-                        <li><a href="#" class="hover:text-primary-400 transition-colors">Profil Pribadi</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition-colors">Testimoni Alumni</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition-colors">Artikel Keajaiban</a></li>
-                        <li><a href="#" class="hover:text-primary-400 transition-colors">Afiliasi Program</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="text-white font-bold mb-6">Pusat Layanan</h4>
-                    <ul class="space-y-4 text-sm">
-                        <li class="flex items-center gap-3">
-                            <i data-lucide="phone" class="w-5 h-5 text-primary-500 flex-shrink-0"></i>
-                            <span>081.2306.33.464</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i data-lucide="mail" class="w-5 h-5 text-primary-500 flex-shrink-0"></i>
-                            <span>admin@masfirmanpratama.com</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-slate-800 pt-8 flex justify-between items-center text-sm">
-                <p>&copy; 2026 Firman Pratama - AMC. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
+    <script src="assets/js/dynamic-layout.js"></script>
     <script>
         lucide.createIcons();
         const navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 20) {
-                navbar.classList.add('shadow-md', 'bg-white/95');
-                navbar.classList.remove('border-gray-100');
-            } else {
-                navbar.classList.remove('shadow-md', 'bg-white/95');
-                navbar.classList.add('border-gray-100');
-            }
-        });
+        if (navbar) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    navbar.classList.add('shadow-md', 'bg-white/95');
+                    navbar.classList.remove('border-gray-100');
+                } else {
+                    navbar.classList.remove('shadow-md', 'bg-white/95');
+                    navbar.classList.add('border-gray-100');
+                }
+            });
+        }
 
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
+        if (btn && menu) {
+            btn.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+        }
     </script>
 </body>
 

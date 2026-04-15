@@ -1,181 +1,118 @@
 <!doctype html>
-<html lang="id">
+<html lang="id" class="scroll-smooth">
 <head>
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Affiliate</title>
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-
-  <!-- Bootstrap CSS for Layout preservation -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Configuration -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
           fontFamily: {
-            sans: ['Inter', 'sans-serif'],
+            sans: ["Inter", "sans-serif"]
           },
           colors: {
             primary: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              800: '#3730a3',
-              900: '#312e81',
+              50: "#eef2ff",
+              100: "#e0e7ff",
+              500: "#6366f1",
+              600: "#4f46e5",
+              700: "#4338ca",
+              800: "#3730a3",
+              900: "#312e81"
             },
             secondary: {
-              50: '#f0fdfa',
-              500: '#14b8a6',
-              600: '#0d9488',
-              900: '#134e4a',
+              50: "#f0fdfa",
+              500: "#14b8a6",
+              600: "#0d9488",
+              900: "#134e4a"
             },
             accent: {
-              500: '#f59e0b',
-              600: '#d97706',
+              500: "#f59e0b",
+              600: "#d97706"
             },
             slate: {
-              850: '#1e293b',
-              900: '#0f172a',
+              850: "#1e293b"
             }
           },
           animation: {
-            'float': 'float 6s ease-in-out infinite',
-            'float-delayed': 'float 6s ease-in-out 3s infinite',
-            'blob': 'blob 7s infinite',
+            blob: "blob 7s infinite"
           },
           keyframes: {
-            float: {
-              '0%, 100%': { transform: 'translateY(0)' },
-              '50%': { transform: 'translateY(-20px)' },
-            },
             blob: {
-              '0%': { transform: 'translate(0px, 0px) scale(1)' },
-              '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
-              '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
-              '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              "0%": { transform: "translate(0px, 0px) scale(1)" },
+              "33%": { transform: "translate(30px, -50px) scale(1.1)" },
+              "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+              "100%": { transform: "translate(0px, 0px) scale(1)" }
             }
           }
         }
       }
-    }
+    };
   </script>
-
-  <!-- Custom CSS Overrides (Tailwind inside Bootstrap) -->
-  <style type="text/tailwindcss">
-    @layer components {
-      body { @apply bg-slate-50 text-slate-700 font-sans; }
-
-      /* Base Bootstrap to Tailwind Mappings */
-      .card, .panel-card { @apply bg-white rounded-3xl border border-slate-100 shadow-sm hover-lift transition-all overflow-hidden relative; }
-      .card-header { @apply bg-transparent border-b border-slate-100 py-4 px-6; }
-      .card-body { @apply p-6; }
-
-      .btn { @apply px-6 py-2.5 rounded-full font-bold transition-all border-0 shadow-sm inline-flex items-center justify-center gap-2; }
-      .btn-sm { @apply px-4 py-1.5 text-sm; }
-      .btn-primary, .btn-critical { @apply ripple bg-primary-600 hover:bg-primary-700 text-white shadow-lg shadow-primary-500/30 hover:-translate-y-1 transform; }
-      .btn-outline-primary { @apply bg-white border border-slate-200 text-slate-700 hover:bg-slate-50; }
-      .btn-light { @apply bg-slate-100 text-slate-700 hover:bg-slate-200; }
-      
-      .form-control, .form-select { @apply w-full rounded-xl bg-slate-50 border border-slate-200 px-4 py-3 focus:ring-2 focus:ring-primary-200 focus:border-primary-500 shadow-none transition-all; }
-      .input-group-text { @apply bg-slate-50 border-slate-200 text-slate-400 rounded-xl px-4; }
-      .input-group .form-control { @apply border-l-0 rounded-l-none pl-0 bg-transparent; }
-      .input-group .input-group-text { @apply border-r-0 rounded-r-none pr-3 bg-transparent; }
-      .input-group { @apply bg-slate-50 border border-slate-200 rounded-xl focus-within:ring-2 focus-within:ring-primary-200 focus-within:border-primary-500 transition-all overflow-hidden; }
-      .input-group > * { @apply border-none; }
-      
-      .navbar { @apply glass border-b border-slate-100 py-3; }
-      .navbar-brand { @apply font-bold text-2xl tracking-tight text-slate-900; }
-      .navbar-brand i { @apply text-primary-600; }
-      
-      h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { @apply font-bold text-slate-900; }
-      .text-muted, .text-secondary { @apply text-slate-500; }
-      .bg-soft { @apply bg-slate-50; }
-      .text-brand, .text-primary, .brand-primary { @apply text-primary-600; }
-      .shadow-soft { @apply shadow-sm; }
-    }
-
-    /* Globals */
-    .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); }
-    .hover-lift { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-    .hover-lift:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
-    .ripple { position: relative; overflow: hidden; }
-    .ripple::after { content: ""; display: block; position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; background-image: radial-gradient(circle, #fff 10%, transparent 10.01%); background-repeat: no-repeat; background-position: 50%; transform: scale(10, 10); opacity: 0; transition: transform .5s, opacity 1s; }
-    .ripple:active::after { transform: scale(0, 0); opacity: 0.3; transition: 0s; }
-    .text-gradient { background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-image: linear-gradient(to right, #4f46e5, #0d9488); }
-  </style>
-
+  <link rel="stylesheet" href="assets/css/tailwind-prototype.css">
 </head>
-<body class="relative bg-slate-50 text-slate-700">
-
-  <!-- Decorative Abstract Background -->
-  <div class="fixed top-0 w-full h-full overflow-hidden z-[-1] pointer-events-none">
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-secondary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-40 animate-blob animation-delay-200"></div>
+<body class="relative min-h-screen bg-slate-50 text-slate-700">
+  <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+    <div class="absolute -left-24 -top-20 h-80 w-80 rounded-full bg-primary-200/70 blur-3xl animate-blob"></div>
+    <div class="absolute -bottom-24 -right-16 h-80 w-80 rounded-full bg-secondary-200/70 blur-3xl animate-blob"></div>
   </div>
 
-  <nav class="navbar navbar-aff">
-    <div class="container">
-      <a class="navbar-brand fw-bold brand-primary d-flex align-items-center gap-2" href="affiliate.html"><i data-lucide="network"></i>Mas Firman Affiliate</a>
-      <a class="btn btn-sm btn-outline-primary" href="register.html">Daftar</a>
-    </div>
-  </nav>
+  <div id="app-header"></div>
 
-  <main class="container py-5" id="loginSection">
-    <div class="row justify-content-center">
-      <div class="col-md-7 col-lg-5">
-        <div class="panel-card p-4 p-lg-5 shadow-soft bg-white/95 backdrop-blur-sm rounded-[1.35rem]" id="loginFormCard">
-          <h1 class="h4 fw-bold mb-1">Login Dashboard Affiliate</h1>
-          <p class="text-secondary mb-4">Masukkan email dan password untuk mengakses panel affiliate.</p>
-
-          <form action="dashboard-nonpeserta.html" method="GET">
-            <div class="mb-3" id="emailField">
-              <label class="form-label">Email</label>
-              <div class="input-group">
-                <span class="input-group-text"><i data-lucide="mail"></i></span>
-                <input type="email" class="form-control" placeholder="nama@email.com" required>
-              </div>
-            </div>
-
-            <div class="mb-3" id="passwordField">
-              <label class="form-label">Password</label>
-              <div class="input-group">
-                <span class="input-group-text"><i data-lucide="lock"></i></span>
-                <input type="password" class="form-control" placeholder="Minimal 8 karakter" required>
-              </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center mb-4">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="rememberMe">
-                <label class="form-check-label" for="rememberMe">Ingat saya</label>
-              </div>
-              <a href="#" class="text-brand text-decoration-none small">Lupa password</a>
-            </div>
-
-            <button type="submit" class="btn btn-critical w-100" id="btnLogin">Masuk Dashboard</button>
-          </form>
-        </div>
+  <main id="loginSection" class="mx-auto grid min-h-[calc(100vh-81px)] w-full max-w-6xl place-items-center px-4 py-10 sm:px-6 lg:px-8">
+    <section id="loginFormCard" class="glass hover-lift w-full max-w-xl rounded-3xl border border-white/60 p-6 shadow-2xl shadow-primary-950/10 sm:p-8">
+      <div class="mb-6">
+        <p class="text-xs font-extrabold uppercase tracking-[0.18em] text-primary-600">Member Area</p>
+        <h1 class="mt-2 text-3xl font-extrabold text-slate-900">Login Dashboard Affiliate</h1>
+        <p class="mt-2 text-sm text-slate-600">Masukkan email dan password untuk mengakses panel affiliate.</p>
       </div>
-    </div>
+
+      <form action="dashboard-nonpeserta.html" method="GET" class="space-y-4">
+        <div id="emailField">
+          <label class="mb-1.5 block text-sm font-semibold text-slate-700">Email</label>
+          <div class="relative">
+            <i data-lucide="mail" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+            <input type="email" class="w-full rounded-xl border border-slate-200 bg-white px-10 py-3 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200" placeholder="nama@email.com" required>
+          </div>
+        </div>
+
+        <div id="passwordField">
+          <label class="mb-1.5 block text-sm font-semibold text-slate-700">Password</label>
+          <div class="relative">
+            <i data-lucide="lock" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"></i>
+            <input type="password" class="w-full rounded-xl border border-slate-200 bg-white px-10 py-3 text-sm text-slate-900 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200" placeholder="Minimal 8 karakter" required>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <label class="inline-flex items-center gap-2 text-sm text-slate-600" for="rememberMe">
+            <input id="rememberMe" type="checkbox" class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-300">
+            Ingat saya
+          </label>
+          <a href="#" class="text-sm font-semibold text-primary-600 hover:text-primary-700">Lupa password</a>
+        </div>
+
+        <button id="btnLogin" type="submit" class="ripple inline-flex w-full items-center justify-center rounded-xl bg-primary-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-primary-500/30 transition hover:-translate-y-0.5 hover:bg-primary-700">Masuk Dashboard</button>
+      </form>
+    </section>
   </main>
 
-  <button id="tourStartBtn" class="btn btn-critical tour-fab d-flex align-items-center gap-1"><i data-lucide="signpost"></i>Mulai Tur Alur Lengkap</button>
+  <div id="app-footer"></div>
 
+  <button id="tourStartBtn" class="tour-fab ripple inline-flex items-center gap-2 rounded-full bg-primary-600 px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-primary-500/30 hover:bg-primary-700">
+    <i data-lucide="signpost" class="h-4 w-4"></i>
+    Mulai Tur Alur Lengkap
+  </button>
+
+  <script src="assets/js/dynamic-layout.js"></script>
   <script>
     window.affiliateTourConfig = {
       flow: "affiliate-login",
@@ -187,8 +124,6 @@
       ]
     };
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
   <script>lucide.createIcons();</script>
   <script src="assets/js/affiliate-tour.js"></script>
 </body>
