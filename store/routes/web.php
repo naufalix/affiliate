@@ -165,6 +165,7 @@ use App\Http\Controllers\Admin\InstallmentSchemeController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\WaNotificationController;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware('guest:admin')->group(function () {
@@ -210,5 +211,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('installment-schemes', InstallmentSchemeController::class)
             ->except(['show'])
             ->parameters(['installment-schemes' => 'installment_scheme']);
+
+        // WA Notifications (M2 — task t_e5d877f3) — read-only list, queued log.
+        // Gateway sender M3+. Pakai dash di URL ('wa-notifications') tapi
+        // route name pakai dash juga biar konsisten.
+        Route::get('wa-notifications', [WaNotificationController::class, 'index'])
+            ->name('wa-notifications.index');
     });
 });

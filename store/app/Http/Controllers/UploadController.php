@@ -171,7 +171,7 @@ class UploadController extends Controller
         });
 
         // Fire event AFTER commit — listener bisa baca persisted state.
-        PaymentSubmitted::dispatch($order->fresh(), $payment->fresh());
+        PaymentSubmitted::dispatch($order->fresh(), $payment->fresh(), $sequence);
 
         return redirect($this->signedShowUrl($order_number, ['seq' => $sequence]))
             ->with('upload.success', true)

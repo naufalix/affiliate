@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Events\OrderShipped;
+use App\Events\PaymentRejected;
+use App\Events\PaymentVerified;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderPayment;
@@ -169,6 +171,11 @@ class OrderController extends Controller
             $this->recalcOrderStatus($order);
         });
 
+        // Refresh order untuk dapet status terbaru pasca recalc, lalu fire event
+        // → SendCustomerPaymentVerifiedNotification queue WA notif (task t_e5d877f3).
+        $order->refresh();
+        event(new PaymentVerified($order, $payment));
+
         return redirect()
             ->route('admin.orders.show', $order)
             ->with('status', 'Pembayaran berhasil diverifikasi.');
@@ -193,6 +200,10 @@ class OrderController extends Controller
             $payment->verified_by = $request->user('admin')?->id;
             $payment->save();
         });
+
+        // Fire PaymentRejected event → SendCustomerPaymentRejectedNotification
+        // queue WA notif dengan rejection_reason + signed re-upload URL (task t_e5d877f3).
+        event(new PaymentRejected($order, $payment, $validated['reason']));
 
         return redirect()
             ->route('admin.orders.show', $order)
