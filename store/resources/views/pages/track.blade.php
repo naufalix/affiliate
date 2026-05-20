@@ -1,5 +1,7 @@
 @php
     /** @var string $orderNumber */
+    /** @var \App\Models\Order|null $dbOrder */
+    $dbOrder = $dbOrder ?? null;
 
     /*
     |--------------------------------------------------------------------------
@@ -264,6 +266,48 @@
                 ? 'Diterima '.$stepDates[6]->translatedFormat('d M Y')
                 : 'Estimasi tiba '.$anchor->copy()->addDays(3)->translatedFormat('d M Y'),
         ];
+    }
+
+    /*
+    | Real-DB override (task t_34ed789d): kalau $dbOrder ada dan udah punya
+    | shipping_resi, pakai data DB nimpa dummy heuristic. Status track juga
+    | override ke 'processing' supaya timeline maju ke step 'shipped'.
+    */
+    if ($dbOrder && $dbOrder->shipping_resi) {
+        $courierLabel = match ($dbOrder->shipping_courier) {
+            'JNE' => 'JNE Reguler',
+            'JNT' => 'J&T Express',
+            'SiCepat' => 'SiCepat Reguler',
+            'Pos' => 'Pos Indonesia',
+            default => $dbOrder->shipping_courier ?? 'Kurir',
+        };
+        $trackingUrl = match ($dbOrder->shipping_courier) {
+            'JNE' => 'https://www.jne.co.id/id/tracking/trace/awb/'.$dbOrder->shipping_resi,
+            'JNT' => 'https://www.jet.co.id/track/'.$dbOrder->shipping_resi,
+            'SiCepat' => 'https://www.sicepat.com/checkAwb/'.$dbOrder->shipping_resi,
+            'Pos' => 'https://www.posindonesia.co.id/id/tracking?awb='.$dbOrder->shipping_resi,
+            default => null,
+        };
+        $shippedAt = $dbOrder->shipped_at ? \Illuminate\Support\Carbon::parse($dbOrder->shipped_at) : $anchor->copy();
+        $shipment = [
+            'courier_label' => $courierLabel,
+            'resi' => $dbOrder->shipping_resi,
+            'tracking_url' => $trackingUrl,
+            'shipped_at' => $shippedAt,
+            'eta_label' => $dbOrder->status === 'completed'
+                ? 'Diterima'
+                : 'Dalam perjalanan',
+        ];
+        // Geser timeline pointer ke step 5 (shipped) — atau 6 kalau completed.
+        if ($dbOrder->status === 'shipped') {
+            $stepPointer = 5;
+            $statusBucket = 'processing'; // visual: shipped block aktif
+        } elseif ($dbOrder->status === 'completed') {
+            $stepPointer = 6;
+            $statusBucket = 'completed';
+        }
+        $hasPhysicalShipping = true;
+        $meta = $statusMeta[$statusBucket];
     }
 
     /*
@@ -824,16 +868,18 @@
                                 <span x-text="resiCopied ? 'Tersalin' : 'Salin'"></span>
                             </button>
                         </div>
-                        <a
-                            href="{{ $shipment['tracking_url'] }}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:underline"
-                            data-testid="tracking-link"
-                        >
-                            <i data-lucide="external-link" class="h-4 w-4"></i>
-                            Lacak di situs kurir
-                        </a>
+                        @if (! empty($shipment['tracking_url']))
+                            <a
+                                href="{{ $shipment['tracking_url'] }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="mt-3 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 hover:underline"
+                                data-testid="tracking-link"
+                            >
+                                <i data-lucide="external-link" class="h-4 w-4"></i>
+                                Lacak di situs kurir
+                            </a>
+                        @endif
                     </div>
                 </div>
             </section>
