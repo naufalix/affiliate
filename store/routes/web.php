@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CheckoutController;
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,16 +32,10 @@ Route::get('/cart', fn () => view('pages.cart'))->name('cart.index');
 // Checkout
 Route::get('/checkout', fn () => view('pages.checkout.index'))->name('checkout.index');
 
-// POST stub — M1: balikan dummy order_number tanpa simpan DB.
-// M2 akan replace ke CheckoutController@store: validate → simpan orders +
-// order_items + order_payments (kalau cicilan) → redirect ke upload bukti.
-Route::post('/checkout', function (Request $request) {
-    $orderNumber = 'MFP-'.now()->format('Ymd').'-'.strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
-
-    return redirect()
-        ->route('checkout.success', ['order' => $orderNumber])
-        ->with('checkout.payload', $request->except(['_token']));
-})->name('checkout.store');
+// POST /checkout — M2 task t_a3f2fe94: persist orders + items + payments,
+// generate payment schedule based on installment_scheme, redirect ke
+// signed URL /upload/{order_number}.
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 
 /*
  * GET /checkout/success/{order}

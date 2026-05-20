@@ -15,8 +15,9 @@
             ->active()
             ->forProduct(null)
             ->orderBy('n_installments')
-            ->get(['name', 'n_installments', 'dp_pct'])
+            ->get(['id', 'name', 'n_installments', 'dp_pct'])
             ->map(fn ($s) => [
+                'id' => $s->id,
                 'name' => $s->name,
                 'n' => $s->n_installments,
                 'dp_pct' => (int) $s->dp_pct,
@@ -26,10 +27,15 @@
         $dbSchemes = [];
     }
 
-    /** @var array<int, array{name: string, n: int, dp_pct: int}> $installmentSchemes */
+    /** @var array<int, array{id: int|null, name: string, n: int, dp_pct: int}> $installmentSchemes */
     $installmentSchemes = ! empty($dbSchemes)
         ? $dbSchemes
-        : config('store.installment_schemes', []);
+        : array_map(
+            // Config fallback ngga punya id — set null. FE submit akan kirim
+            // installment_scheme_id=null, validator akan reject kalau cicilan.
+            fn ($s) => array_merge(['id' => null], $s),
+            (array) config('store.installment_schemes', []),
+        );
     /** @var array<int, array{code: string, label: string, price: int}> $shippingMethods */
     $shippingMethods = config('store.shipping_methods', []);
     /** @var array<int, string> $provinces */
@@ -409,7 +415,7 @@
                             </label>
                             <select
                                 id="installment_scheme"
-                                name="installment_scheme"
+                                name="installment_scheme_id"
                                 x-model.number="form.installment_scheme"
                                 @change="touch('installment_scheme')"
                                 :class="errorClasses('installment_scheme')"
@@ -418,7 +424,7 @@
                                 <option :value="null">Pilih skema cicilan</option>
                                 <template x-for="(scheme, idx) in schemes" :key="idx">
                                     <option
-                                        :value="idx"
+                                        :value="scheme.id ?? idx"
                                         x-text="scheme.name + ' — DP ' + scheme.dp_pct + '%'"
                                     ></option>
                                 </template>
@@ -675,9 +681,13 @@
                     },
 
                     get selectedScheme() {
-                        const idx = this.form.installment_scheme;
-                        if (idx === null || idx === undefined || idx === '') return null;
-                        return this.schemes[Number(idx)] || null;
+                        const val = this.form.installment_scheme;
+                        if (val === null || val === undefined || val === '') return null;
+                        // Cari by DB id dulu (DB-backed schemes punya id), fallback
+                        // ke index (config fallback ngga punya id).
+                        const byId = this.schemes.find((s) => s.id != null && Number(s.id) === Number(val));
+                        if (byId) return byId;
+                        return this.schemes[Number(val)] || null;
                     },
 
                     get dpAmount() {

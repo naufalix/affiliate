@@ -2,10 +2,27 @@
 
 namespace Tests\Feature;
 
+use App\Models\Product;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class CheckoutPageTest extends TestCase
 {
+    use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // M2 task t_a3f2fe94: checkout flow now hits DB (CheckoutController).
+        // Seed minimum product so any POST /checkout test has resolvable cart.
+        Product::factory()->create([
+            'slug' => 'kelas-amc-reguler',
+            'title' => 'Kelas AMC Reguler',
+            'price' => 4_500_000,
+            'status' => 'active',
+            'type' => 'course',
+        ]);
+    }
     // ─── GET /checkout ──────────────────────────────────────────────────────
 
     public function test_checkout_page_returns_200(): void
@@ -141,7 +158,7 @@ class CheckoutPageTest extends TestCase
 
     // ─── POST /checkout (M1 stub) ───────────────────────────────────────────
 
-    public function test_checkout_post_redirects_to_success_with_dummy_order_number(): void
+    public function test_checkout_post_redirects_to_upload_signed_url(): void
     {
         $response = $this->post('/checkout', [
             'customer_name' => 'Budi Santoso',
@@ -152,13 +169,16 @@ class CheckoutPageTest extends TestCase
             'address_province' => 'Jawa Timur',
             'shipping_method' => 'REG',
             'payment_type' => 'lunas',
-            'cart_json' => '[]',
-            'cart_total' => 4500000,
+            'cart_json' => json_encode([
+                ['slug' => 'kelas-amc-reguler', 'qty' => 1, 'price' => 4_500_000],
+            ]),
+            'cart_total' => 4_500_000,
         ]);
 
         $response->assertStatus(302);
-        // Redirects to /checkout/success/{order} with MFP- prefix.
-        $response->assertRedirectContains('/checkout/success/MFP-');
+        // M2: redirects to /upload/{order_number} signed URL with MFP- prefix.
+        $response->assertRedirectContains('/upload/MFP-');
+        $this->assertStringContainsString('signature=', $response->headers->get('Location'));
     }
 
     public function test_checkout_success_page_shows_order_number(): void
@@ -205,39 +225,19 @@ class CheckoutPageTest extends TestCase
 
     public function test_checkout_success_page_renders_lunas_total_when_payment_type_lunas(): void
     {
-        // Sanity: the POST stub redirects (302) before we follow.
-        $this
-            ->post('/checkout', [
-                'customer_name' => 'Budi Santoso',
-                'customer_email' => 'budi@example.com',
-                'customer_phone' => '081234567890',
-                'address_line' => 'Jl. Mawar No. 12 RT 03 RW 04',
-                'address_city' => 'Surabaya',
-                'address_province' => 'Jawa Timur',
-                'shipping_method' => 'REG',
+        // M1 stub flow: POST /checkout → flash payload → redirect ke /checkout/success/{order}
+        // → page baca session payload. M2 flow: POST /checkout → redirect ke /upload signed URL,
+        // success page no longer in main flow but masih ke-register sebagai legacy view.
+        // Test direct GET dengan session payload simulasi (cara M1 success page baca data).
+        $response = $this->withSession([
+            'checkout.payload' => [
                 'payment_type' => 'lunas',
-                'cart_json' => '[]',
                 'cart_total' => 4525000,
-            ])
-            ->assertStatus(302);
-
-        // Re-issue and follow the redirect to read the rendered page.
-        $response = $this->followingRedirects()->post('/checkout', [
-            'customer_name' => 'Budi Santoso',
-            'customer_email' => 'budi@example.com',
-            'customer_phone' => '081234567890',
-            'address_line' => 'Jl. Mawar No. 12 RT 03 RW 04',
-            'address_city' => 'Surabaya',
-            'address_province' => 'Jawa Timur',
-            'shipping_method' => 'REG',
-            'payment_type' => 'lunas',
-            'cart_json' => '[]',
-            'cart_total' => 4525000,
-        ]);
+            ],
+        ])->get('/checkout/success/MFP-20260516-LUNAS1');
 
         $response->assertStatus(200);
         $response->assertSee('Total Transfer (Lunas)', false);
-        // Indonesian locale formatting (dot thousand sep)
         $response->assertSee('Rp 4.525.000', false);
         $response->assertDontSee('Total Transfer (Down Payment)', false);
     }
@@ -250,26 +250,17 @@ class CheckoutPageTest extends TestCase
             ['label' => 'Cicilan ke-2 dari 2', 'note' => 'Cicilan terakhir', 'due_label' => '16 Jul 2026', 'amount' => 1583750],
         ]);
 
-        $response = $this->followingRedirects()->post('/checkout', [
-            'customer_name' => 'Siti Aminah',
-            'customer_email' => 'siti@example.com',
-            'customer_phone' => '081298765432',
-            'address_line' => 'Jl. Melati No. 7 RT 01 RW 02',
-            'address_city' => 'Bandung',
-            'address_province' => 'Jawa Barat',
-            'shipping_method' => 'REG',
-            'payment_type' => 'cicilan',
-            'installment_scheme' => 0,
-            'schedule_json' => $schedule,
-            'cart_json' => '[]',
-            'cart_total' => 4525000,
-        ]);
+        $response = $this->withSession([
+            'checkout.payload' => [
+                'payment_type' => 'cicilan',
+                'cart_total' => 4525000,
+                'schedule_json' => $schedule,
+            ],
+        ])->get('/checkout/success/MFP-20260516-CIC123');
 
         $response->assertStatus(200);
-        // DP total dipakai sebagai total transfer.
         $response->assertSee('Total Transfer (Down Payment)', false);
         $response->assertSee('Rp 1.357.500', false);
-        // Schedule preview rendered.
         $response->assertSee('Jadwal Pembayaran', false);
         $response->assertSee('Cicilan ke-1 dari 2', false);
         $response->assertSee('Cicilan ke-2 dari 2', false);
