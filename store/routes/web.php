@@ -195,6 +195,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('orders/{order}/payments/{payment}/reject', [OrderController::class, 'rejectPayment'])
             ->name('orders.payments.reject');
 
+        // Input resi + transition ke shipped (M2 — task t_34ed789d)
+        // Precondition: order.status='paid'. Validate kurir + resi, fire OrderShipped event.
+        Route::post('orders/{order}/ship', [OrderController::class, 'markShipped'])
+            ->name('orders.ship');
+
         // Settings (M2 — task t_6be9a4e4) — store info + bank accounts CRUD
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
         Route::put('settings/store-info', [SettingsController::class, 'updateStoreInfo'])

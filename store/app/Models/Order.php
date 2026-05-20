@@ -19,12 +19,16 @@ class Order extends Model
         'total',
         'status',
         'ref_code',
+        'shipping_courier',
+        'shipping_resi',
+        'shipped_at',
     ];
 
     protected function casts(): array
     {
         return [
             'total' => 'decimal:2',
+            'shipped_at' => 'datetime',
         ];
     }
 
