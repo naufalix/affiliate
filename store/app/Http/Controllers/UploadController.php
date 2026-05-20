@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
@@ -80,6 +81,8 @@ class UploadController extends Controller
             'defaultSequence' => $defaultSequence,
             'dbOrder' => $order,
             'pendingPayments' => $pendingPayments,
+            'uploadStoreUrl' => $this->signedStoreUrl($order_number),
+            'trackUrl' => $this->signedTrackUrl($order_number),
         ]);
     }
 
@@ -170,10 +173,55 @@ class UploadController extends Controller
         // Fire event AFTER commit — listener bisa baca persisted state.
         PaymentSubmitted::dispatch($order->fresh(), $payment->fresh());
 
-        return redirect()
-            ->route('upload.show', ['order_number' => $order_number])
+        return redirect($this->signedShowUrl($order_number, ['seq' => $sequence]))
             ->with('upload.success', true)
             ->with('upload.sequence', $sequence);
+    }
+
+    /**
+     * Generate signed POST URL ke /upload/{order_number} buat form action.
+     * TTL match config('checkout.upload_url_ttl_days') sehingga form expire
+     * konsisten dengan show URL.
+     */
+    protected function signedStoreUrl(string $order_number): string
+    {
+        $ttlDays = max(1, (int) config('checkout.upload_url_ttl_days', 7));
+
+        return URL::temporarySignedRoute(
+            'upload.store',
+            now()->addDays($ttlDays),
+            ['order_number' => $order_number],
+        );
+    }
+
+    /**
+     * Generate signed GET URL kembali ke upload page (redirect after store).
+     */
+    protected function signedShowUrl(string $order_number, array $extraParams = []): string
+    {
+        $ttlDays = max(1, (int) config('checkout.upload_url_ttl_days', 7));
+
+        return URL::temporarySignedRoute(
+            'upload.show',
+            now()->addDays($ttlDays),
+            array_merge(['order_number' => $order_number], $extraParams),
+        );
+    }
+
+    /**
+     * Generate signed GET URL ke /track/{order_number}. TTL config-driven
+     * (default 30 days, lebih panjang dari upload supaya customer bisa
+     * monitor sampai delivered).
+     */
+    protected function signedTrackUrl(string $order_number): string
+    {
+        $ttlDays = max(1, (int) config('checkout.track_url_ttl_days', 30));
+
+        return URL::temporarySignedRoute(
+            'track.show',
+            now()->addDays($ttlDays),
+            ['order_number' => $order_number],
+        );
     }
 
     /**
@@ -206,23 +254,27 @@ class UploadController extends Controller
             'defaultSequence' => $defaultSequence,
             'dbOrder' => null,
             'pendingPayments' => collect(),
+            'uploadStoreUrl' => $this->signedStoreUrl($order_number),
+            'trackUrl' => $this->signedTrackUrl($order_number),
         ]);
     }
 
     /**
      * M1 stub flash redirect — order ngga ada di DB, redirect dengan success
-     * flash tanpa save apa pun.
+     * flash tanpa save apa pun. Pakai signed URL juga supaya consistent
+     * dengan flow utama (kalau /upload/{order_number} udah signed-only,
+     * fallback redirect ngga boleh balik plain).
      */
     protected function m1StubFlashRedirect(Request $request, string $order_number): RedirectResponse
     {
-        return redirect()
-            ->route('upload.show', array_filter([
-                'order_number' => $order_number,
-                'type' => $request->query('type'),
-                'total' => $request->query('total'),
-                'n' => $request->query('n'),
-                'seq' => $request->query('seq'),
-            ]))
+        $extra = array_filter([
+            'type' => $request->query('type'),
+            'total' => $request->query('total'),
+            'n' => $request->query('n'),
+            'seq' => $request->query('seq'),
+        ]);
+
+        return redirect($this->signedShowUrl($order_number, $extra))
             ->with('upload.success', true)
             ->with('upload.sequence', (int) $request->input('installment_sequence', 0));
     }

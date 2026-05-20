@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Routing\Exceptions\InvalidSignatureException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -29,5 +30,19 @@ return Application::configure(basePath: dirname(__DIR__))
         });
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        // Custom render untuk InvalidSignatureException (task t_8a063559).
         //
+        // Laravel default: 403 Forbidden tanpa konteks. Kita render view
+        // 'pages.signed-url-error' dengan pesan Indonesian-friendly + CTA
+        // hubungi admin. Status code:
+        //   - 403 (default) untuk signature mismatch (URL di-tweak / hilang)
+        //   - 410 (Gone) untuk URL expired (kita ngga bisa bedakan langsung
+        //     dari Laravel — semua dilemparin sebagai 403, jadi pakai 403
+        //     dengan view yang sebut kemungkinan expired juga).
+        $exceptions->render(function (InvalidSignatureException $e, $request) {
+            return response()
+                ->view('pages.signed-url-error', [
+                    'requestPath' => $request->path(),
+                ], 403);
+        });
     })->create();

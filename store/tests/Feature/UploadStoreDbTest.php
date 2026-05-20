@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 /**
@@ -23,6 +24,24 @@ use Tests\TestCase;
 class UploadStoreDbTest extends TestCase
 {
     use RefreshDatabase;
+
+    private function signedShow(string $orderNumber, array $query = []): string
+    {
+        return URL::temporarySignedRoute(
+            'upload.show',
+            now()->addDays(7),
+            array_merge(['order_number' => $orderNumber], $query),
+        );
+    }
+
+    private function signedStore(string $orderNumber): string
+    {
+        return URL::temporarySignedRoute(
+            'upload.store',
+            now()->addDays(7),
+            ['order_number' => $orderNumber],
+        );
+    }
 
     protected Order $order;
 
@@ -58,14 +77,14 @@ class UploadStoreDbTest extends TestCase
 
     public function test_show_real_order_renders_view_with_db_data(): void
     {
-        $this->get(route('upload.show', ['order_number' => $this->order->order_number]))
+        $this->get($this->signedShow($this->order->order_number))
             ->assertOk()
             ->assertSee($this->order->order_number);
     }
 
     public function test_show_unknown_order_falls_back_to_m1_stub(): void
     {
-        $this->get('/upload/MFP-NOT-EXIST?type=lunas&total=4500000&n=1')
+        $this->get($this->signedShow('MFP-NOT-EXIST', ['type' => 'lunas', 'total' => 4500000, 'n' => 1]))
             ->assertOk();
     }
 
@@ -75,11 +94,12 @@ class UploadStoreDbTest extends TestCase
 
         $file = UploadedFile::fake()->image('bukti.jpg');
 
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'proof_file' => $file,
             'installment_sequence' => 0,
         ])
-            ->assertRedirect(route('upload.show', ['order_number' => $this->order->order_number]))
+            ->assertStatus(302)
+            ->assertRedirectContains('/upload/'.$this->order->order_number)
             ->assertSessionHas('upload.success', true);
 
         $payment = OrderPayment::where('order_id', $this->order->id)->first();
@@ -105,7 +125,7 @@ class UploadStoreDbTest extends TestCase
 
     public function test_store_validates_file_required(): void
     {
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'installment_sequence' => 0,
         ])
             ->assertSessionHasErrors('proof_file');
@@ -118,7 +138,7 @@ class UploadStoreDbTest extends TestCase
     {
         $oversized = UploadedFile::fake()->image('huge.jpg')->size(2049); // 2049 KB > 2 MB
 
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'proof_file' => $oversized,
             'installment_sequence' => 0,
         ])
@@ -129,7 +149,7 @@ class UploadStoreDbTest extends TestCase
     {
         $pdf = UploadedFile::fake()->create('doc.pdf', 100, 'application/pdf');
 
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'proof_file' => $pdf,
             'installment_sequence' => 0,
         ])
@@ -141,7 +161,7 @@ class UploadStoreDbTest extends TestCase
         $file = UploadedFile::fake()->image('bukti.jpg');
 
         // Order cuma 1 payment (lunas) → seq=5 invalid
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'proof_file' => $file,
             'installment_sequence' => 5,
         ])
@@ -152,14 +172,14 @@ class UploadStoreDbTest extends TestCase
     {
         $file1 = UploadedFile::fake()->image('first.jpg');
 
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'proof_file' => $file1,
             'installment_sequence' => 0,
         ])->assertRedirect();
 
         // Second upload for same payment → reject.
         $file2 = UploadedFile::fake()->image('second.jpg');
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'proof_file' => $file2,
             'installment_sequence' => 0,
         ])
@@ -170,7 +190,7 @@ class UploadStoreDbTest extends TestCase
     {
         $file = UploadedFile::fake()->image('bukti.jpg');
 
-        $this->post('/upload/MFP-NOT-EXIST', [
+        $this->post($this->signedStore('MFP-NOT-EXIST'), [
             'proof_file' => $file,
             'installment_sequence' => 0,
         ])
@@ -195,7 +215,7 @@ class UploadStoreDbTest extends TestCase
         $file = UploadedFile::fake()->image('cicilan2.jpg');
 
         // Upload untuk cicilan ke-2 (seq=1, 0-indexed)
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'proof_file' => $file,
             'installment_sequence' => 1,
         ])->assertRedirect();
@@ -220,7 +240,7 @@ class UploadStoreDbTest extends TestCase
         ]);
 
         $file = UploadedFile::fake()->image('late.jpg');
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'proof_file' => $file,
             'installment_sequence' => 0,
         ])
@@ -232,7 +252,7 @@ class UploadStoreDbTest extends TestCase
         // Custom filename "evil-injection.jpg" — server should rename.
         $file = UploadedFile::fake()->image('evil-injection.jpg');
 
-        $this->post(route('upload.store', ['order_number' => $this->order->order_number]), [
+        $this->post($this->signedStore($this->order->order_number), [
             'proof_file' => $file,
             'installment_sequence' => 0,
         ])->assertRedirect();
@@ -275,7 +295,7 @@ class UploadStoreDbTest extends TestCase
 
         // Upload bukti
         $file = UploadedFile::fake()->image('bukti-e2e.jpg');
-        $this->post(route('upload.store', ['order_number' => $orderNumber]), [
+        $this->post(URL::temporarySignedRoute('upload.store', now()->addDays(7), ['order_number' => $orderNumber]), [
             'proof_file' => $file,
             'installment_sequence' => 0,
         ])->assertRedirect();

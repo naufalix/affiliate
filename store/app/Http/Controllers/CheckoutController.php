@@ -139,17 +139,31 @@ class CheckoutController extends Controller
             return $order;
         });
 
-        // Signed URL TTL 24h (pre-payment window). Customer share aman karena
-        // signature pakai APP_KEY — task t_8a063559 nanti bakal harden lebih lanjut.
+        // Signed URL token-protect (task t_8a063559). TTL config-driven via
+        // config/checkout.php → CHECKOUT_UPLOAD_URL_TTL_DAYS env (default 7d).
+        // Signature pakai APP_KEY, di-validate route middleware('signed').
+        $uploadTtlDays = max(1, (int) config('checkout.upload_url_ttl_days', 7));
         $uploadUrl = URL::temporarySignedRoute(
             'upload.show',
-            now()->addHours(24),
+            now()->addDays($uploadTtlDays),
+            ['order_number' => $order->order_number],
+        );
+
+        // Signed track URL (task t_8a063559). TTL lebih panjang dari upload
+        // (default 30d) supaya customer bisa monitor sampai delivered.
+        // URL di-stash di session supaya checkout success page bisa pakai.
+        $trackTtlDays = max(1, (int) config('checkout.track_url_ttl_days', 30));
+        $trackUrl = URL::temporarySignedRoute(
+            'track.show',
+            now()->addDays($trackTtlDays),
             ['order_number' => $order->order_number],
         );
 
         return redirect($uploadUrl)
             ->with('checkout.success', true)
-            ->with('checkout.order_number', $order->order_number);
+            ->with('checkout.order_number', $order->order_number)
+            ->with('checkout.track_url', $trackUrl)
+            ->with('checkout.upload_url', $uploadUrl);
     }
 
     /**

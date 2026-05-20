@@ -169,7 +169,7 @@
                             Konfirmasi via WhatsApp
                         </a>
                         <a
-                            href="{{ route('track.show', ['order_number' => $orderNumber]) }}"
+                            href="{{ $trackUrl ?? route('track.show', ['order_number' => $orderNumber]) }}"
                             class="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-white px-4 py-2.5 text-sm font-bold text-emerald-700 transition hover:border-emerald-500"
                         >
                             <i data-lucide="package-search" class="h-4 w-4"></i>
@@ -195,7 +195,7 @@
             x-show="!success"
             x-cloak
             method="POST"
-            action="{{ route('upload.store', ['order_number' => $orderNumber]) }}"
+            action="{{ $uploadStoreUrl ?? route('upload.store', ['order_number' => $orderNumber]) }}"
             enctype="multipart/form-data"
             class="panel-card glass mt-8 rounded-3xl border border-white/60 p-6 sm:p-8"
             @submit="onSubmit($event)"

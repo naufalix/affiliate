@@ -90,12 +90,13 @@ Route::get('/checkout/success/{order}', function (string $order) {
  * payments count. Fallback ke M1 stub kalau order_number ngga match (backward
  * compat dengan prototype + signed URL dari checkout).
  *
- * TODO (task t_8a063559): wajib harden token-protect (signed URL Laravel atau
- * JWT) — saat ini signed URL TTL 24h dari CheckoutController, tapi route ini
- * belum require signed middleware (biar M1 stub flow tetap jalan).
+ * Token-protect (task t_8a063559): require Laravel signed middleware. URL
+ * generated di CheckoutController::store via URL::temporarySignedRoute.
+ * TTL configurable via config('checkout.upload_url_ttl_seconds') default 7d.
  */
 Route::get('/upload/{order_number}', [UploadController::class, 'show'])
     ->where('order_number', '[A-Za-z0-9\\-]+')
+    ->middleware('signed')
     ->name('upload.show');
 
 /*
@@ -109,14 +110,24 @@ Route::get('/upload/{order_number}', [UploadController::class, 'show'])
  * pending|partial_paid|paid|... ngga punya 'payment_review'). Status
  * transition ke 'paid' / 'partial_paid' di OrderController::approvePayment
  * setelah admin verify.
+ *
+ * Token-protect (task t_8a063559): require signed middleware juga — form di
+ * upload page submit ulang URL yang sama dengan signature.
  */
 Route::post('/upload/{order_number}', [UploadController::class, 'store'])
     ->where('order_number', '[A-Za-z0-9\\-]+')
+    ->middleware('signed')
     ->name('upload.store');
 
-// Order tracking
+/*
+ * GET /track/{order_number}
+ * --------------------------------------------------------------------------
+ * Customer track order via signed URL. Akses tanpa signature → 403, expired
+ * (>30d) → 410. Token-protect (task t_8a063559).
+ */
 Route::get('/track/{order_number}', fn (string $order_number) => view('pages.track', ['orderNumber' => $order_number]))
-    ->where('order_number', '[A-Za-z0-9\-]+')
+    ->where('order_number', '[A-Za-z0-9\\-]+')
+    ->middleware('signed')
     ->name('track.show');
 
 /*

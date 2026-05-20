@@ -2,20 +2,34 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class TrackOrderPageTest extends TestCase
 {
+    /**
+     * Generate signed URL ke /track/{order_number} buat test.
+     * Track route protected via 'signed' middleware (task t_8a063559).
+     */
+    private function signedTrack(string $orderNumber): string
+    {
+        return URL::temporarySignedRoute(
+            'track.show',
+            now()->addDays(30),
+            ['order_number' => $orderNumber],
+        );
+    }
+
     // ─── Smoke ─────────────────────────────────────────────────────────────
 
     public function test_track_page_returns_200(): void
     {
-        $this->get('/track/MFP-20260516-ABC123')->assertStatus(200);
+        $this->get($this->signedTrack('MFP-20260516-ABC123'))->assertStatus(200);
     }
 
     public function test_track_page_uses_store_layout_assets(): void
     {
-        $response = $this->get('/track/MFP-20260516-ABC123');
+        $response = $this->get($this->signedTrack('MFP-20260516-ABC123'));
 
         $response->assertStatus(200);
         // Vite-injected CSS + JS markers
@@ -31,7 +45,7 @@ class TrackOrderPageTest extends TestCase
 
     public function test_track_page_renders_order_number_in_header(): void
     {
-        $response = $this->get('/track/MFP-20260516-ABC123');
+        $response = $this->get($this->signedTrack('MFP-20260516-ABC123'));
 
         $response->assertStatus(200);
         $response->assertSee('data-testid="order-number"', false);
@@ -42,7 +56,7 @@ class TrackOrderPageTest extends TestCase
     public function test_track_page_renders_status_badge(): void
     {
         // 'A' suffix → unpaid
-        $response = $this->get('/track/MFP-20260516-NEWXA');
+        $response = $this->get($this->signedTrack('MFP-20260516-NEWXA'));
         $response->assertStatus(200);
         $response->assertSee('data-testid="status-badge"', false);
         $response->assertSee('data-status="unpaid"', false);
@@ -52,12 +66,12 @@ class TrackOrderPageTest extends TestCase
     public function test_status_badge_changes_per_order_suffix(): void
     {
         $cases = [
-            ['/track/MFP-DUMMYA', 'unpaid', 'Menunggu Pembayaran'],
-            ['/track/MFP-DUMMYC', 'waiting_confirmation', 'Menunggu Verifikasi'],
-            ['/track/MFP-DUMMYE', 'paid', 'Lunas'],
-            ['/track/MFP-DUMMYG', 'partial_paid', 'Cicilan Berjalan'],
-            ['/track/MFP-DUMMYJ', 'processing', 'Sedang Diproses'],
-            ['/track/MFP-DUMMYZ', 'completed', 'Pesanan Selesai'],
+            [$this->signedTrack('MFP-DUMMYA'), 'unpaid', 'Menunggu Pembayaran'],
+            [$this->signedTrack('MFP-DUMMYC'), 'waiting_confirmation', 'Menunggu Verifikasi'],
+            [$this->signedTrack('MFP-DUMMYE'), 'paid', 'Lunas'],
+            [$this->signedTrack('MFP-DUMMYG'), 'partial_paid', 'Cicilan Berjalan'],
+            [$this->signedTrack('MFP-DUMMYJ'), 'processing', 'Sedang Diproses'],
+            [$this->signedTrack('MFP-DUMMYZ'), 'completed', 'Pesanan Selesai'],
         ];
 
         foreach ($cases as [$url, $status, $needle]) {
@@ -72,7 +86,7 @@ class TrackOrderPageTest extends TestCase
 
     public function test_track_page_renders_six_step_timeline(): void
     {
-        $response = $this->get('/track/MFP-20260516-ABC123');
+        $response = $this->get($this->signedTrack('MFP-20260516-ABC123'));
 
         $response->assertStatus(200);
         $response->assertSee('data-testid="status-timeline"', false);
@@ -97,7 +111,7 @@ class TrackOrderPageTest extends TestCase
 
     public function test_track_page_renders_order_items_block(): void
     {
-        $response = $this->get('/track/MFP-20260516-ABC123');
+        $response = $this->get($this->signedTrack('MFP-20260516-ABC123'));
 
         $response->assertStatus(200);
         $response->assertSee('data-testid="order-items"', false);
@@ -113,7 +127,7 @@ class TrackOrderPageTest extends TestCase
     public function test_track_page_renders_payment_history_table_for_paid_order(): void
     {
         // 'E' suffix → paid → ada 1 row payment history confirmed
-        $response = $this->get('/track/MFP-20260516-PAIDE');
+        $response = $this->get($this->signedTrack('MFP-20260516-PAIDE'));
 
         $response->assertStatus(200);
         $response->assertSee('data-testid="payment-history"', false);
@@ -126,7 +140,7 @@ class TrackOrderPageTest extends TestCase
     public function test_track_page_renders_installment_rows_for_partial_paid_order(): void
     {
         // 'G' suffix → partial_paid → DP confirmed + 2 cicilan pending
-        $response = $this->get('/track/MFP-20260516-PARTG');
+        $response = $this->get($this->signedTrack('MFP-20260516-PARTG'));
 
         $response->assertStatus(200);
         $response->assertSee('Down Payment (30%)', false);
@@ -140,12 +154,12 @@ class TrackOrderPageTest extends TestCase
     public function test_track_page_renders_empty_state_when_no_payment(): void
     {
         // 'A' suffix → unpaid → belum ada payment history
-        $response = $this->get('/track/MFP-20260516-NEWXA');
+        $response = $this->get($this->signedTrack('MFP-20260516-NEWXA'));
 
         $response->assertStatus(200);
         $response->assertSee('Belum ada bukti bayar yang diupload.', false);
         // CTA upload muncul
-        $response->assertSee('href="'.url('/upload/MFP-20260516-NEWXA').'"', false);
+        $response->assertSee('/upload/MFP-20260516-NEWXA', false);
         $response->assertSee('Upload bukti bayar', false);
     }
 
@@ -154,7 +168,7 @@ class TrackOrderPageTest extends TestCase
     public function test_track_page_renders_shipment_card_for_processing_order(): void
     {
         // 'J' suffix → processing → shipment card muncul (item fisik = buku)
-        $response = $this->get('/track/MFP-20260516-PROCJ');
+        $response = $this->get($this->signedTrack('MFP-20260516-PROCJ'));
 
         $response->assertStatus(200);
         $response->assertSee('data-testid="shipment-card"', false);
@@ -167,7 +181,7 @@ class TrackOrderPageTest extends TestCase
 
     public function test_track_page_omits_shipment_card_for_unpaid_order(): void
     {
-        $response = $this->get('/track/MFP-20260516-NEWXA');
+        $response = $this->get($this->signedTrack('MFP-20260516-NEWXA'));
 
         $response->assertStatus(200);
         $response->assertDontSee('data-testid="shipment-card"', false);
@@ -177,7 +191,7 @@ class TrackOrderPageTest extends TestCase
 
     public function test_track_page_shows_upload_cta_when_unpaid(): void
     {
-        $response = $this->get('/track/MFP-20260516-NEWXA');
+        $response = $this->get($this->signedTrack('MFP-20260516-NEWXA'));
 
         $response->assertStatus(200);
         $response->assertSee('data-testid="cta-upload"', false);
@@ -185,7 +199,7 @@ class TrackOrderPageTest extends TestCase
 
     public function test_track_page_shows_upload_cta_when_partial_paid(): void
     {
-        $response = $this->get('/track/MFP-20260516-PARTG');
+        $response = $this->get($this->signedTrack('MFP-20260516-PARTG'));
 
         $response->assertStatus(200);
         $response->assertSee('data-testid="cta-upload"', false);
@@ -193,7 +207,7 @@ class TrackOrderPageTest extends TestCase
 
     public function test_track_page_hides_upload_cta_when_completed(): void
     {
-        $response = $this->get('/track/MFP-20260516-DONEZ');
+        $response = $this->get($this->signedTrack('MFP-20260516-DONEZ'));
 
         $response->assertStatus(200);
         $response->assertDontSee('data-testid="cta-upload"', false);
@@ -203,7 +217,7 @@ class TrackOrderPageTest extends TestCase
 
     public function test_track_page_renders_wa_admin_link(): void
     {
-        $response = $this->get('/track/MFP-20260516-ABC123');
+        $response = $this->get($this->signedTrack('MFP-20260516-ABC123'));
 
         $response->assertStatus(200);
         $waNumber = config('store.wa_admin.number');

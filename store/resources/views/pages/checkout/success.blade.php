@@ -107,7 +107,7 @@
                     <span x-text="copied ? 'Tersalin!' : 'Salin nomor pesanan'"></span>
                 </button>
                 <a
-                    href="{{ route('track.show', ['order_number' => $order]) }}"
+                    href="{{ session('checkout.track_url') ?? route('track.show', ['order_number' => $order]) }}"
                     class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-primary-300 hover:text-primary-600"
                 >
                     <i data-lucide="package-search" class="h-4 w-4"></i>
@@ -281,7 +281,7 @@
                 Upload bukti bayar sekarang
             </a>
             <a
-                href="{{ route('track.show', ['order_number' => $order]) }}"
+                href="{{ session('checkout.track_url') ?? route('track.show', ['order_number' => $order]) }}"
                 class="inline-flex items-center justify-center gap-2 rounded-2xl border-2 border-slate-200 bg-white px-6 py-4 text-base font-bold text-slate-700 transition hover:border-primary-300 hover:text-primary-600"
                 data-testid="cta-track"
             >
