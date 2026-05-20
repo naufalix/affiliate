@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\OrderShipped;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderPayment;
@@ -25,6 +26,17 @@ class OrderController extends Controller
         'cancelled',
         'refunded',
     ];
+
+    /**
+     * Kurir yang didukung untuk input resi.
+     */
+    public const COURIERS = ['JNE', 'JNT', 'SiCepat', 'Pos', 'Other'];
+
+    /**
+     * Status precondition yang valid untuk transition ke 'shipped'.
+     * Schema enum source-of-truth: 'paid' = lunas terverifikasi, siap kirim.
+     */
+    public const SHIPPABLE_FROM = ['paid'];
 
     public function index(Request $request): View
     {
@@ -111,6 +123,8 @@ class OrderController extends Controller
             'totalRejected' => $totalRejected,
             'remaining' => $remaining,
             'statuses' => self::STATUSES,
+            'couriers' => self::COURIERS,
+            'canShip' => in_array($order->status, self::SHIPPABLE_FROM, true),
         ]);
     }
 
@@ -210,5 +224,44 @@ class OrderController extends Controller
         }
 
         $order->save();
+    }
+
+    /**
+     * Mark order as shipped — admin input kurir + nomor resi, transition status
+     * 'paid' → 'shipped'. Trigger OrderShipped event untuk WA notif downstream
+     * (listener belum diimplement, di-fire saja supaya wiring siap).
+     *
+     * Precondition: order.status harus salah satu dari self::SHIPPABLE_FROM.
+     * Default: 'paid' saja — partial_paid / pending / cancelled / refunded /
+     * shipped (sudah) / completed (terlalu lanjut) di-reject 422.
+     */
+    public function markShipped(Request $request, Order $order): RedirectResponse
+    {
+        abort_if(
+            ! in_array($order->status, self::SHIPPABLE_FROM, true),
+            422,
+            'Order belum siap kirim. Status sekarang: '.$order->status
+                .'. Hanya status berikut yang bisa di-shipped: '.implode(', ', self::SHIPPABLE_FROM).'.',
+        );
+
+        $validated = $request->validate([
+            'shipping_courier' => ['required', 'string', 'in:'.implode(',', self::COURIERS)],
+            'shipping_resi' => ['required', 'string', 'min:4', 'max:64'],
+        ]);
+
+        DB::transaction(function () use ($order, $validated) {
+            $order->shipping_courier = $validated['shipping_courier'];
+            $order->shipping_resi = trim($validated['shipping_resi']);
+            $order->shipped_at = now();
+            $order->status = 'shipped';
+            $order->save();
+        });
+
+        // Fire event AFTER commit — listener bisa baca persisted state.
+        OrderShipped::dispatch($order->fresh());
+
+        return redirect()
+            ->route('admin.orders.show', $order)
+            ->with('status', 'Resi berhasil di-input. Order ditandai sebagai dikirim.');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -172,9 +173,19 @@ Route::post('/upload/{order_number}', function (string $order_number, Request $r
     ->where('order_number', '[A-Za-z0-9\-]+')
     ->name('upload.store');
 
-// Order tracking
-Route::get('/track/{order_number}', fn (string $order_number) => view('pages.track', ['orderNumber' => $order_number]))
-    ->where('order_number', '[A-Za-z0-9\-]+')
+// Order tracking — M1 dummy + M2 hydrate (task t_34ed789d):
+// Kalau order_number cocok ke DB, pass real Order ke view supaya track page
+// bisa override shipment block dengan data shipping_courier/shipping_resi/shipped_at
+// yang baru di-input admin. Kalau ngga ada, fallback ke dummy heuristic lama.
+Route::get('/track/{order_number}', function (string $order_number) {
+    $order = Order::where('order_number', $order_number)->first();
+
+    return view('pages.track', [
+        'orderNumber' => $order_number,
+        'dbOrder' => $order,
+    ]);
+})
+    ->where('order_number', '[A-Za-z0-9\\-]+')
     ->name('track.show');
 
 /*
@@ -241,6 +252,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('orders.payments.approve');
         Route::post('orders/{order}/payments/{payment}/reject', [OrderController::class, 'rejectPayment'])
             ->name('orders.payments.reject');
+
+        // Input resi + transition ke shipped (M2 — task t_34ed789d)
+        // Precondition: order.status='paid'. Validate kurir + resi, fire OrderShipped event.
+        Route::post('orders/{order}/ship', [OrderController::class, 'markShipped'])
+            ->name('orders.ship');
 
         // Settings (M2 — task t_6be9a4e4) — store info + bank accounts CRUD
         Route::get('settings', [SettingsController::class, 'index'])->name('settings.index');
