@@ -2,14 +2,20 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 class TrackOrderPageTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * Generate signed URL ke /track/{order_number} buat test.
      * Track route protected via 'signed' middleware (task t_8a063559).
+     * Pakai dummy order_number (suffix-based heuristic) — Order DB lookup
+     * di route closure return null, fallback ke dummy view path (M1 backward
+     * compat). Real DB hydrate path di-test di TrackOrderDbHydrateTest.
      */
     private function signedTrack(string $orderNumber): string
     {

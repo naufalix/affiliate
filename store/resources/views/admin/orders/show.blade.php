@@ -335,12 +335,109 @@
             </x-admin.card>
 
             <x-admin.card>
-                <h2 class="text-sm font-semibold text-slate-700 mb-3">Aksi</h2>
-                <p class="text-xs text-slate-500">
-                    Verifikasi pembayaran tersedia di panel <span class="font-medium text-slate-700">Pembayaran</span>
-                    di kiri (button Approve / Reject pada entri status <span class="font-medium">Menunggu</span>).
-                    Input resi & status transition ke shipped akan ditambahkan di task berikutnya.
-                </p>
+                <h2 class="text-sm font-semibold text-slate-700 mb-3">Aksi Pengiriman</h2>
+
+                @if ($order->status === 'shipped' || $order->status === 'completed')
+                    {{-- Order sudah dikirim — tampilkan info resi read-only --}}
+                    <div class="space-y-3 text-sm">
+                        <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-3">
+                            <div class="flex items-center gap-2 text-emerald-800 font-semibold">
+                                <i data-lucide="truck" class="h-4 w-4"></i>
+                                <span>Sudah Dikirim</span>
+                            </div>
+                            @if ($order->shipped_at)
+                                <p class="mt-1 text-xs text-emerald-700">
+                                    {{ \Illuminate\Support\Carbon::parse($order->shipped_at)->translatedFormat('d M Y, H:i') }}
+                                </p>
+                            @endif
+                        </div>
+                        <dl class="grid grid-cols-2 gap-3">
+                            <div>
+                                <dt class="text-xs uppercase tracking-wide text-slate-500">Kurir</dt>
+                                <dd class="mt-0.5 font-medium text-slate-800">{{ $order->shipping_courier ?? '—' }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-xs uppercase tracking-wide text-slate-500">Nomor Resi</dt>
+                                <dd class="mt-0.5 font-mono text-slate-800 break-all">{{ $order->shipping_resi ?? '—' }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+                @elseif ($canShip)
+                    {{-- Order siap kirim (status=paid) — tampilkan form input resi --}}
+                    <p class="text-xs text-slate-500 mb-3">
+                        Order sudah lunas. Isi kurir &amp; nomor resi untuk transition ke
+                        <span class="font-medium text-slate-700">Dikirim</span>.
+                    </p>
+                    <form
+                        method="POST"
+                        action="{{ route('admin.orders.ship', $order) }}"
+                        class="space-y-3"
+                        data-testid="form-input-resi"
+                    >
+                        @csrf
+                        <div>
+                            <label for="shipping_courier" class="block text-xs font-medium text-slate-600 mb-1">
+                                Kurir <span class="text-rose-500">*</span>
+                            </label>
+                            <select
+                                name="shipping_courier"
+                                id="shipping_courier"
+                                required
+                                class="w-full rounded-lg border-slate-300 text-sm focus:border-primary-500 focus:ring-primary-500 @error('shipping_courier') border-rose-400 @enderror"
+                            >
+                                <option value="">— Pilih kurir —</option>
+                                @foreach ($couriers as $c)
+                                    <option value="{{ $c }}" @selected(old('shipping_courier') === $c)>{{ $c }}</option>
+                                @endforeach
+                            </select>
+                            @error('shipping_courier')
+                                <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="shipping_resi" class="block text-xs font-medium text-slate-600 mb-1">
+                                Nomor Resi / AWB <span class="text-rose-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                name="shipping_resi"
+                                id="shipping_resi"
+                                value="{{ old('shipping_resi') }}"
+                                required
+                                minlength="4"
+                                maxlength="64"
+                                placeholder="cth. JNE1234567890"
+                                class="w-full rounded-lg border-slate-300 text-sm font-mono focus:border-primary-500 focus:ring-primary-500 @error('shipping_resi') border-rose-400 @enderror"
+                            >
+                            @error('shipping_resi')
+                                <p class="mt-1 text-xs text-rose-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button
+                            type="submit"
+                            class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-1"
+                            onclick="return confirm('Konfirmasi: tandai order ini sebagai dikirim dengan resi yang diinput?');"
+                        >
+                            <i data-lucide="truck" class="h-4 w-4"></i>
+                            Tandai Dikirim
+                        </button>
+                    </form>
+                @else
+                    {{-- Status belum siap kirim — info kondisi --}}
+                    <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs text-slate-600">
+                        <div class="flex items-center gap-2 mb-1">
+                            <i data-lucide="info" class="h-4 w-4 text-slate-500"></i>
+                            <span class="font-semibold text-slate-700">Belum siap kirim</span>
+                        </div>
+                        <p>
+                            Status sekarang: <span class="font-mono font-medium">{{ $order->status }}</span>.
+                            Form input resi tersedia setelah pembayaran lunas terverifikasi (status =
+                            <span class="font-mono">paid</span>).
+                        </p>
+                    </div>
+                @endif
             </x-admin.card>
         </div>
     </div>
