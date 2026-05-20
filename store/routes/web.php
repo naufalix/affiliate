@@ -122,10 +122,22 @@ Route::post('/upload/{order_number}', [UploadController::class, 'store'])
 /*
  * GET /track/{order_number}
  * --------------------------------------------------------------------------
- * Customer track order via signed URL. Akses tanpa signature → 403, expired
- * (>30d) → 410. Token-protect (task t_8a063559).
+ * Customer track order via signed URL (task t_8a063559). Akses tanpa
+ * signature → 403, expired (>30d) → 410.
+ *
+ * M2 hydrate (task t_34ed789d): kalau order_number cocok ke DB, pass real
+ * Order ke view supaya track page bisa override shipment block dengan data
+ * shipping_courier/shipping_resi/shipped_at yang baru di-input admin. Kalau
+ * ngga ada, fallback ke dummy heuristic lama (backward compat M1).
  */
-Route::get('/track/{order_number}', fn (string $order_number) => view('pages.track', ['orderNumber' => $order_number]))
+Route::get('/track/{order_number}', function (string $order_number) {
+    $order = Order::where('order_number', $order_number)->first();
+
+    return view('pages.track', [
+        'orderNumber' => $order_number,
+        'dbOrder' => $order,
+    ]);
+})
     ->where('order_number', '[A-Za-z0-9\\-]+')
     ->middleware('signed')
     ->name('track.show');
