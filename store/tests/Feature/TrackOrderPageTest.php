@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class TrackOrderPageTest extends TestCase
 {
+    use RefreshDatabase;
     // ─── Smoke ─────────────────────────────────────────────────────────────
 
     public function test_track_page_returns_200(): void
