@@ -8,6 +8,7 @@ use App\Models\Order;
 use Database\Seeders\AdminSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
 /**
@@ -240,7 +241,11 @@ class OrderShipTest extends TestCase
             'shipped_at' => now()->subHour(),
         ]);
 
-        $this->get(route('track.show', ['order_number' => $order->order_number]))
+        $this->get(URL::temporarySignedRoute(
+            'track.show',
+            now()->addDays(30),
+            ['order_number' => $order->order_number],
+        ))
             ->assertOk()
             ->assertSee('JNE9988776655')
             ->assertSee('jne.co.id'); // tracking link
@@ -249,7 +254,11 @@ class OrderShipTest extends TestCase
     public function test_track_page_falls_back_to_dummy_when_no_real_order(): void
     {
         // Order number ngga ada di DB → fallback ke dummy heuristic.
-        $this->get(route('track.show', ['order_number' => 'MFP-NOTEXIST-XYZ']))
+        $this->get(URL::temporarySignedRoute(
+            'track.show',
+            now()->addDays(30),
+            ['order_number' => 'MFP-NOTEXIST-XYZ'],
+        ))
             ->assertOk();
     }
 }
