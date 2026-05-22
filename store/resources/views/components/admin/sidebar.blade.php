@@ -9,7 +9,7 @@
 <aside {{ $attributes->class(['hidden lg:flex lg:w-64 flex-col border-r border-slate-200 bg-white']) }}>
     <div class="flex h-16 items-center px-6 border-b border-slate-100">
         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2 font-semibold tracking-tight text-slate-900">
-            <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-secondary-500 text-white text-sm">F</span>
+            <x-admin.logo />
             Admin Panel
         </a>
     </div>
