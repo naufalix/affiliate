@@ -115,7 +115,7 @@
             'price' => 'Rp 7.500.000',
             'priceNote' => '*Bisa dicicil sampai lunas.',
             'iconAccent' => 'mic',
-            'iconColor' => 'text-orange-600',
+            'iconColor' => 'text-accent-600',
             'features' => [
                 '20 Materi AMC',
                 'Modul materi AMC',
