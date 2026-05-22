@@ -25,9 +25,9 @@
             <div class="text-xs text-amber-700">Queued</div>
             <div class="mt-1 text-lg font-semibold text-amber-900" data-testid="stat-queued">{{ $stats['queued'] }}</div>
         </div>
-        <div class="rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2.5">
-            <div class="text-xs text-emerald-700">Sent</div>
-            <div class="mt-1 text-lg font-semibold text-emerald-900" data-testid="stat-sent">{{ $stats['sent'] }}</div>
+        <div class="rounded-xl border border-secondary-100 bg-secondary-50 px-3 py-2.5">
+            <div class="text-xs text-secondary-700">Sent</div>
+            <div class="mt-1 text-lg font-semibold text-secondary-900" data-testid="stat-sent">{{ $stats['sent'] }}</div>
         </div>
         <div class="rounded-xl border border-rose-100 bg-rose-50 px-3 py-2.5">
             <div class="text-xs text-rose-700">Failed</div>
@@ -102,7 +102,7 @@
                     <tbody class="divide-y divide-slate-100 bg-white text-sm">
                         @foreach ($notifications as $notif)
                             @php
-                                $toneMap = ['queued' => 'amber', 'sent' => 'emerald', 'failed' => 'rose'];
+                                $toneMap = ['queued' => 'amber', 'sent' => 'secondary', 'failed' => 'rose'];
                                 $tone = $toneMap[$notif->status] ?? 'slate';
                             @endphp
                             <tr data-testid="wa-notif-row" data-id="{{ $notif->id }}" data-status="{{ $notif->status }}">

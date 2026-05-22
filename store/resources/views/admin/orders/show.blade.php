@@ -340,13 +340,13 @@
                 @if ($order->status === 'shipped' || $order->status === 'completed')
                     {{-- Order sudah dikirim — tampilkan info resi read-only --}}
                     <div class="space-y-3 text-sm">
-                        <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-3">
-                            <div class="flex items-center gap-2 text-emerald-800 font-semibold">
+                        <div class="rounded-xl bg-secondary-50 border border-secondary-200 p-3">
+                            <div class="flex items-center gap-2 text-secondary-800 font-semibold">
                                 <i data-lucide="truck" class="h-4 w-4"></i>
                                 <span>Sudah Dikirim</span>
                             </div>
                             @if ($order->shipped_at)
-                                <p class="mt-1 text-xs text-emerald-700">
+                                <p class="mt-1 text-xs text-secondary-700">
                                     {{ \Illuminate\Support\Carbon::parse($order->shipped_at)->translatedFormat('d M Y, H:i') }}
                                 </p>
                             @endif

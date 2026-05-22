@@ -54,8 +54,8 @@
         'paid' => [
             'label' => 'Lunas — Menunggu Diproses',
             'desc' => 'Pembayaran lunas terverifikasi. Pesanan akan segera diproses tim.',
-            'badge' => 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-            'dot' => 'bg-emerald-500',
+            'badge' => 'bg-secondary-50 text-secondary-700 ring-secondary-200',
+            'dot' => 'bg-secondary-500',
             'icon' => 'badge-check',
         ],
         'partial_paid' => [
@@ -75,8 +75,8 @@
         'completed' => [
             'label' => 'Pesanan Selesai',
             'desc' => 'Pesanan sudah selesai. Terima kasih sudah berbelanja di Firman Pratama.',
-            'badge' => 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-            'dot' => 'bg-emerald-500',
+            'badge' => 'bg-secondary-50 text-secondary-700 ring-secondary-200',
+            'dot' => 'bg-secondary-500',
             'icon' => 'check-circle-2',
         ],
     ];
@@ -335,7 +335,7 @@
             'icon' => 'clock-3',
         ],
         'confirmed' => [
-            'badge' => 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+            'badge' => 'bg-secondary-50 text-secondary-700 ring-secondary-200',
             'label' => 'Diverifikasi',
             'icon' => 'badge-check',
         ],
@@ -410,7 +410,7 @@
                 href="{{ $waLink }}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100"
+                class="inline-flex min-h-[44px] items-center gap-2 rounded-full border border-secondary-200 bg-secondary-50 px-4 py-2 text-sm font-semibold text-secondary-700 transition hover:border-secondary-300 hover:bg-secondary-100"
             >
                 <i data-lucide="message-circle" class="h-4 w-4"></i>
                 Tanya Admin
@@ -830,7 +830,7 @@
                 data-testid="shipment-card"
             >
                 <header class="flex items-start gap-3">
-                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary-50 text-secondary-600">
                         <i data-lucide="truck" class="h-5 w-5"></i>
                     </span>
                     <div>

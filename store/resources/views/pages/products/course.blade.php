@@ -411,7 +411,7 @@
                                 @endif
                             </div>
                             @if ($installmentAvailable)
-                                <div class="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-full text-xs font-bold border border-emerald-100 shrink-0">
+                                <div class="bg-secondary-50 text-secondary-700 px-3 py-1 rounded-full text-xs font-bold border border-secondary-100 shrink-0">
                                     Cicilan Tersedia
                                 </div>
                             @endif
@@ -423,7 +423,7 @@
                         <ul class="space-y-3 mb-8 text-sm text-slate-600">
                             @foreach (array_slice($benefits, 0, 5) as $benefit)
                                 <li class="flex items-start gap-3">
-                                    <div class="w-6 h-6 rounded-full bg-emerald-50 flex items-center justify-center shrink-0 text-emerald-600 mt-0.5">
+                                    <div class="w-6 h-6 rounded-full bg-secondary-50 flex items-center justify-center shrink-0 text-secondary-600 mt-0.5">
                                         <i data-lucide="check" class="w-3.5 h-3.5"></i>
                                     </div>
                                     <span class="font-medium leading-relaxed pt-0.5">{{ $benefit['title'] }}</span>
@@ -444,7 +444,7 @@
 
                         <div class="mt-6 pt-6 border-t border-slate-100 flex items-center justify-center gap-4 text-xs text-slate-500">
                             <div class="flex items-center gap-1.5">
-                                <i data-lucide="shield-check" class="w-4 h-4 text-emerald-500"></i>
+                                <i data-lucide="shield-check" class="w-4 h-4 text-secondary-500"></i>
                                 Garansi
                             </div>
                             <div class="flex items-center gap-1.5">

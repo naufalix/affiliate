@@ -29,7 +29,7 @@
     $logoPalette = [
         'sky' => 'bg-sky-50 text-sky-700 ring-sky-200',
         'amber' => 'bg-amber-50 text-amber-700 ring-amber-200',
-        'emerald' => 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+        'emerald' => 'bg-secondary-50 text-secondary-700 ring-secondary-200',
         'rose' => 'bg-rose-50 text-rose-700 ring-rose-200',
         'indigo' => 'bg-indigo-50 text-indigo-700 ring-indigo-200',
     ];
@@ -60,7 +60,7 @@
         {{-- ====================================================== --}}
         <header class="text-center">
             <span
-                class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 ring-1 ring-emerald-200"
+                class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary-50 text-secondary-600 ring-1 ring-secondary-200"
                 aria-hidden="true"
             >
                 <i data-lucide="badge-check" class="h-8 w-8"></i>
@@ -295,15 +295,15 @@
         {{-- ====================================================== --}}
         <aside
             id="waAdminNote"
-            class="mt-8 flex flex-col items-start gap-4 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"
+            class="mt-8 flex flex-col items-start gap-4 rounded-3xl border border-secondary-200 bg-secondary-50/70 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6"
         >
             <div class="flex items-start gap-3">
-                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-100 text-emerald-700">
+                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary-100 text-secondary-700">
                     <i data-lucide="message-circle-more" class="h-5 w-5"></i>
                 </span>
                 <div>
-                    <p class="text-sm font-bold text-emerald-900">Butuh konfirmasi via WhatsApp?</p>
-                    <p class="mt-0.5 text-sm text-emerald-800">
+                    <p class="text-sm font-bold text-secondary-900">Butuh konfirmasi via WhatsApp?</p>
+                    <p class="mt-0.5 text-sm text-secondary-800">
                         Hubungi {{ $waAdmin['label'] }} jika kamu butuh bantuan atau ingin konfirmasi setelah transfer.
                     </p>
                 </div>
@@ -312,7 +312,7 @@
                 href="{{ $waLink }}"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-flex shrink-0 items-center gap-2 rounded-full bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:-translate-y-0.5 hover:bg-emerald-700"
+                class="inline-flex shrink-0 items-center gap-2 rounded-full bg-secondary-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-secondary-500/30 transition hover:-translate-y-0.5 hover:bg-secondary-700"
             >
                 <i data-lucide="message-circle" class="h-4 w-4"></i>
                 Chat admin di WhatsApp

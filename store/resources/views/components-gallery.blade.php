@@ -53,7 +53,7 @@
                 <x-benefit-card icon="award" title="Sertifikat Resmi" iconColor="accent">
                     Setiap kelas memberikan sertifikat resmi sebagai bukti kompetensi.
                 </x-benefit-card>
-                <x-benefit-card icon="shield-check" title="Halal &amp; Logis" iconColor="emerald">
+                <x-benefit-card icon="shield-check" title="Halal &amp; Logis" iconColor="secondary">
                     Pendekatan ilmiah, bisa diterima logika, dan tidak bertentangan dengan agama.
                 </x-benefit-card>
                 <x-benefit-card icon="heart" title="Pendampingan Personal" iconColor="rose">

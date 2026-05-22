@@ -10,7 +10,6 @@
         'secondary' => 'bg-secondary-50 text-secondary-600 group-hover:bg-secondary-600 group-hover:text-white',
         'accent' => 'bg-accent-50 text-accent-600 group-hover:bg-accent-600 group-hover:text-white',
         'rose' => 'bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white',
-        'emerald' => 'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white',
         'amber' => 'bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white',
     ];
 

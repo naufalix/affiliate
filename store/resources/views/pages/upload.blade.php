@@ -144,18 +144,18 @@
             x-show="success"
             x-cloak
             x-transition.opacity
-            class="mt-8 rounded-3xl border border-emerald-200 bg-emerald-50/70 p-6 sm:p-8"
+            class="mt-8 rounded-3xl border border-secondary-200 bg-secondary-50/70 p-6 sm:p-8"
             role="status"
             aria-live="polite"
             data-testid="upload-success-state"
         >
             <div class="flex items-start gap-4">
-                <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700">
+                <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-secondary-100 text-secondary-700">
                     <i data-lucide="badge-check" class="h-6 w-6"></i>
                 </span>
                 <div class="min-w-0">
-                    <h2 class="text-2xl font-bold text-emerald-900">Bukti diterima</h2>
-                    <p class="mt-2 text-emerald-800">
+                    <h2 class="text-2xl font-bold text-secondary-900">Bukti diterima</h2>
+                    <p class="mt-2 text-secondary-800">
                         Tim admin akan verifikasi pembayaran kamu via WhatsApp dalam 1×24 jam kerja. Kamu bakal dapat update status order setelah dicek.
                     </p>
                     <div class="mt-5 flex flex-wrap gap-3">
@@ -163,14 +163,14 @@
                             href="{{ $waLink }}"
                             target="_blank"
                             rel="noopener noreferrer"
-                            class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-emerald-500/30 transition hover:-translate-y-0.5 hover:bg-emerald-700"
+                            class="inline-flex items-center gap-2 rounded-full bg-secondary-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-secondary-500/30 transition hover:-translate-y-0.5 hover:bg-secondary-700"
                         >
                             <i data-lucide="message-circle" class="h-4 w-4"></i>
                             Konfirmasi via WhatsApp
                         </a>
                         <a
                             href="{{ $trackUrl ?? route('track.show', ['order_number' => $orderNumber]) }}"
-                            class="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-white px-4 py-2.5 text-sm font-bold text-emerald-700 transition hover:border-emerald-500"
+                            class="inline-flex items-center gap-2 rounded-full border border-secondary-300 bg-white px-4 py-2.5 text-sm font-bold text-secondary-700 transition hover:border-secondary-500"
                         >
                             <i data-lucide="package-search" class="h-4 w-4"></i>
                             Track order

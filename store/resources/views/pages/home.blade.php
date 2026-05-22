@@ -136,7 +136,7 @@
             'price' => 'Rp 22.500.000',
             'priceNote' => '*Bisa dicicil sampai lunas.',
             'iconAccent' => 'gem',
-            'iconColor' => 'text-emerald-400',
+            'iconColor' => 'text-secondary-400',
             'features' => [
                 'Materi advanced',
                 'Hotel 3 hari 2 malam',
@@ -387,7 +387,7 @@
                         $taglineClass = $isDark ? 'text-slate-300' : 'text-slate-600';
                         $priceClass = $isDark ? 'text-white' : 'text-slate-900';
                         $featureTextClass = $isDark ? 'text-slate-300' : 'text-slate-700';
-                        $checkIconClass = $isDark ? 'text-emerald-400' : 'text-emerald-500';
+                        $checkIconClass = $isDark ? 'text-secondary-400' : 'text-secondary-500';
                         $borderClass = $isDark ? 'border-slate-800' : 'border-slate-100';
                         $noteClass = $isDark ? 'text-slate-500' : 'text-slate-500';
                     @endphp
@@ -436,7 +436,7 @@
                                     href="{{ $tier['ctaHref'] }}"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="block w-full text-center bg-white text-slate-900 hover:bg-emerald-50 hover:text-emerald-700 rounded-xl py-3.5 font-bold transition-all shadow-md"
+                                    class="block w-full text-center bg-white text-slate-900 hover:bg-secondary-50 hover:text-secondary-700 rounded-xl py-3.5 font-bold transition-all shadow-md"
                                 >
                                     {{ $tier['ctaLabel'] }}
                                 </a>
