@@ -141,7 +141,7 @@
 
                 @if ($isEdit && $product->image_path)
                     <label class="mt-3 inline-flex items-center gap-2 text-xs text-slate-600">
-                        <input type="checkbox" name="remove_image" value="1" class="rounded border-slate-300 text-red-600 focus:ring-red-200">
+                        <input type="checkbox" name="remove_image" value="1" class="rounded border-slate-300 text-rose-600 focus:ring-rose-200">
                         Hapus gambar saat ini
                     </label>
                 @endif

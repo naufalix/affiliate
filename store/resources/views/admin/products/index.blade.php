@@ -139,7 +139,7 @@
                 </button>
                 <button type="submit" name="action" value="force_delete"
                     onclick="return confirm('Hapus permanen produk yang dipilih? Tindakan ini tidak bisa dibatalkan.');"
-                    class="inline-flex items-center gap-1 rounded-full bg-red-600 px-3 py-1.5 font-medium text-white hover:bg-red-500 transition">
+                    class="inline-flex items-center gap-1 rounded-full bg-rose-600 px-3 py-1.5 font-medium text-white hover:bg-rose-500 transition">
                     <x-admin.icon name="trash" class="h-3 w-3" />
                     Hapus permanen
                 </button>
@@ -154,7 +154,7 @@
                 </button>
                 <button type="submit" name="action" value="soft_delete"
                     onclick="return confirm('Pindahkan ke arsip (soft delete)? Bisa di-restore.');"
-                    class="inline-flex items-center gap-1 rounded-full bg-red-600 px-3 py-1.5 font-medium text-white hover:bg-red-500 transition">
+                    class="inline-flex items-center gap-1 rounded-full bg-rose-600 px-3 py-1.5 font-medium text-white hover:bg-rose-500 transition">
                     <x-admin.icon name="trash" class="h-3 w-3" />
                     Soft delete
                 </button>
@@ -242,7 +242,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
-                                        class="inline-flex items-center gap-1 rounded-full border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition">
+                                        class="inline-flex items-center gap-1 rounded-full border border-rose-200 bg-white px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 transition">
                                         <x-admin.icon name="trash" class="h-3 w-3" />
                                         Hapus
                                     </button>

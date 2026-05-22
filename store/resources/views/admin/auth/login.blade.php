@@ -48,10 +48,10 @@
                             required
                             autofocus
                             autocomplete="username"
-                            class="mt-1.5 block w-full rounded-xl border-slate-200 bg-white px-4 py-2.5 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 @error('email') border-red-300 ring-1 ring-red-300 @enderror"
+                            class="mt-1.5 block w-full rounded-xl border-slate-200 bg-white px-4 py-2.5 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 @error('email') border-rose-300 ring-1 ring-rose-300 @enderror"
                             placeholder="admin@masfirmanpratama.com">
                         @error('email')
-                            <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+                            <p class="mt-1.5 text-xs text-rose-600">{{ $message }}</p>
                         @enderror
                     </div>
 
@@ -63,10 +63,10 @@
                             name="password"
                             required
                             autocomplete="current-password"
-                            class="mt-1.5 block w-full rounded-xl border-slate-200 bg-white px-4 py-2.5 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 @error('password') border-red-300 ring-1 ring-red-300 @enderror"
+                            class="mt-1.5 block w-full rounded-xl border-slate-200 bg-white px-4 py-2.5 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 @error('password') border-rose-300 ring-1 ring-rose-300 @enderror"
                             placeholder="••••••••">
                         @error('password')
-                            <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+                            <p class="mt-1.5 text-xs text-rose-600">{{ $message }}</p>
                         @enderror
                     </div>
 

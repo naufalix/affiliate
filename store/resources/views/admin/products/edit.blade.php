@@ -16,7 +16,7 @@
                 @csrf
                 @method('DELETE')
                 <button type="submit"
-                    class="inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-white px-4 py-2 text-xs font-medium text-red-600 hover:bg-red-50 transition">
+                    class="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-white px-4 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 transition">
                     <x-admin.icon name="trash" class="h-3.5 w-3.5" />
                     Hapus
                 </button>

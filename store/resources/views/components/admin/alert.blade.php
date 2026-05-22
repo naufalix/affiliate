@@ -9,7 +9,7 @@
         'info' => ['border' => 'border-primary-200', 'bg' => 'bg-primary-50', 'text' => 'text-primary-900', 'icon' => 'info', 'iconClass' => 'text-primary-500'],
         'success' => ['border' => 'border-secondary-200', 'bg' => 'bg-secondary-50', 'text' => 'text-secondary-900', 'icon' => 'check', 'iconClass' => 'text-secondary-600'],
         'warning' => ['border' => 'border-accent-200', 'bg' => 'bg-accent-50', 'text' => 'text-accent-900', 'icon' => 'alert-triangle', 'iconClass' => 'text-accent-600'],
-        'error' => ['border' => 'border-red-200', 'bg' => 'bg-red-50', 'text' => 'text-red-900', 'icon' => 'alert-triangle', 'iconClass' => 'text-red-600'],
+        'error' => ['border' => 'border-rose-200', 'bg' => 'bg-rose-50', 'text' => 'text-rose-900', 'icon' => 'alert-triangle', 'iconClass' => 'text-rose-600'],
     ];
     $cfg = $tones[$tone] ?? $tones['info'];
 @endphp

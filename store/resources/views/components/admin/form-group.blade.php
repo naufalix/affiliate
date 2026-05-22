@@ -17,7 +17,7 @@
         <label @if ($controlId) for="{{ $controlId }}" @endif class="block text-sm font-medium text-slate-700">
             {{ $label }}
             @if ($required)
-                <span class="text-red-500" aria-hidden="true">*</span>
+                <span class="text-rose-500" aria-hidden="true">*</span>
             @endif
         </label>
     @endif
@@ -29,6 +29,6 @@
     @endif
 
     @if ($errorMsg)
-        <p class="text-xs text-red-600">{{ $errorMsg }}</p>
+        <p class="text-xs text-rose-600">{{ $errorMsg }}</p>
     @endif
 </div>

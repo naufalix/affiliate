@@ -50,7 +50,7 @@
                             Primary
                         </label>
                         <button type="button" @click="removeRow(idx)"
-                            class="ml-auto inline-flex items-center gap-1 rounded-full border border-red-200 bg-white px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 transition">
+                            class="ml-auto inline-flex items-center gap-1 rounded-full border border-rose-200 bg-white px-3 py-1.5 text-xs font-medium text-rose-600 hover:bg-rose-50 transition">
                             <x-admin.icon name="trash" class="h-3 w-3" />
                             Hapus
                         </button>
