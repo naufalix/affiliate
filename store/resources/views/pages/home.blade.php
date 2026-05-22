@@ -240,16 +240,19 @@
                             <div class="absolute -inset-4 bg-gradient-to-tr from-primary-500/20 to-secondary-500/20 rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" aria-hidden="true"></div>
 
                             <div class="relative h-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border-8 border-white/50 glass">
-                                <img
-                                    src="{{ asset('assets/images/firman-foto.jpeg') }}"
-                                    alt="Mas Firman Pratama — Pakar Kekuatan Pikiran"
-                                    width="320"
-                                    height="384"
-                                    loading="eager"
-                                    fetchpriority="high"
-                                    decoding="async"
-                                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                >
+                                <picture>
+                                    <source srcset="{{ asset('assets/images/firman-foto.webp') }}" type="image/webp">
+                                    <img
+                                        src="{{ asset('assets/images/firman-foto.jpeg') }}"
+                                        alt="Mas Firman Pratama — Pakar Kekuatan Pikiran"
+                                        width="320"
+                                        height="384"
+                                        loading="eager"
+                                        fetchpriority="high"
+                                        decoding="async"
+                                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    >
+                                </picture>
                                 <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-slate-900/80 to-transparent">
                                     <h2 class="text-xl font-bold text-white mb-1">Mas Firman Pratama</h2>
                                     <p class="text-xs text-slate-200 font-medium tracking-wide">Pakar Kekuatan Pikiran</p>
