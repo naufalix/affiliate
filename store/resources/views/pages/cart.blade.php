@@ -33,12 +33,15 @@
         </p>
 
         {{-- ========================================================== --}}
-        {{-- Empty state                                                 --}}
+        {{-- Cart state container — reserve min-height to prevent CLS    --}}
+        {{-- (empty/non-empty toggle happens post-hydration via Alpine)  --}}
         {{-- ========================================================== --}}
+        <div class="mt-10 min-h-[420px]">
+        {{-- Empty state --}}
         <div
             x-show="$store.cart.isEmpty"
             x-cloak
-            class="mt-10 glass rounded-3xl border border-white/60 p-10 text-center sm:p-16"
+            class="glass rounded-3xl border border-white/60 p-10 text-center sm:p-16"
         >
             <div class="mx-auto inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
                 <i data-lucide="shopping-cart" class="h-10 w-10"></i>
@@ -232,6 +235,7 @@
                 </div>
             </aside>
         </div>
+        </div> {{-- /min-h-[420px] cart state container (CLS guard) --}}
 
         {{-- ========================================================== --}}
         {{-- Sticky mobile checkout bar (only when cart not empty)        --}}

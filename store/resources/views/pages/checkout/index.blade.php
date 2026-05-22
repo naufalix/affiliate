@@ -158,7 +158,7 @@
                                 placeholder="Nama sesuai KTP"
                                 required
                             >
-                            <p x-show="errors.customer_name" x-cloak x-text="errors.customer_name" class="mt-1.5 text-xs font-medium text-rose-600"></p>
+                            <p x-text="errors.customer_name || '\u00A0'" class="mt-1.5 min-h-[1.25rem] text-xs font-medium text-rose-600" :class="errors.customer_name ? 'opacity-100' : 'opacity-0'" aria-live="polite"></p>
                         </div>
 
                         <div>
@@ -178,7 +178,7 @@
                                 placeholder="nama@email.com"
                                 required
                             >
-                            <p x-show="errors.customer_email" x-cloak x-text="errors.customer_email" class="mt-1.5 text-xs font-medium text-rose-600"></p>
+                            <p x-text="errors.customer_email || '\u00A0'" class="mt-1.5 min-h-[1.25rem] text-xs font-medium text-rose-600" :class="errors.customer_email ? 'opacity-100' : 'opacity-0'" aria-live="polite"></p>
                         </div>
 
                         <div>
@@ -198,7 +198,7 @@
                                 placeholder="08xxxxxxxxxx"
                                 required
                             >
-                            <p x-show="errors.customer_phone" x-cloak x-text="errors.customer_phone" class="mt-1.5 text-xs font-medium text-rose-600"></p>
+                            <p x-text="errors.customer_phone || '\u00A0'" class="mt-1.5 min-h-[1.25rem] text-xs font-medium text-rose-600" :class="errors.customer_phone ? 'opacity-100' : 'opacity-0'" aria-live="polite"></p>
                         </div>
                     </div>
                 </section>
@@ -235,7 +235,7 @@
                                 placeholder="Jalan, nomor rumah, RT/RW, kelurahan, kecamatan"
                                 required
                             ></textarea>
-                            <p x-show="errors.address_line" x-cloak x-text="errors.address_line" class="mt-1.5 text-xs font-medium text-rose-600"></p>
+                            <p x-text="errors.address_line || '\u00A0'" class="mt-1.5 min-h-[1.25rem] text-xs font-medium text-rose-600" :class="errors.address_line ? 'opacity-100' : 'opacity-0'" aria-live="polite"></p>
                         </div>
 
                         <div>
@@ -256,7 +256,7 @@
                                     <option value="{{ $city }}">{{ $city }}</option>
                                 @endforeach
                             </select>
-                            <p x-show="errors.address_city" x-cloak x-text="errors.address_city" class="mt-1.5 text-xs font-medium text-rose-600"></p>
+                            <p x-text="errors.address_city || '\u00A0'" class="mt-1.5 min-h-[1.25rem] text-xs font-medium text-rose-600" :class="errors.address_city ? 'opacity-100' : 'opacity-0'" aria-live="polite"></p>
                         </div>
 
                         <div>
@@ -277,7 +277,7 @@
                                     <option value="{{ $province }}">{{ $province }}</option>
                                 @endforeach
                             </select>
-                            <p x-show="errors.address_province" x-cloak x-text="errors.address_province" class="mt-1.5 text-xs font-medium text-rose-600"></p>
+                            <p x-text="errors.address_province || '\u00A0'" class="mt-1.5 min-h-[1.25rem] text-xs font-medium text-rose-600" :class="errors.address_province ? 'opacity-100' : 'opacity-0'" aria-live="polite"></p>
                         </div>
 
                         <div>
@@ -316,7 +316,7 @@
                                     ></option>
                                 </template>
                             </select>
-                            <p x-show="errors.shipping_method" x-cloak x-text="errors.shipping_method" class="mt-1.5 text-xs font-medium text-rose-600"></p>
+                            <p x-text="errors.shipping_method || '\u00A0'" class="mt-1.5 min-h-[1.25rem] text-xs font-medium text-rose-600" :class="errors.shipping_method ? 'opacity-100' : 'opacity-0'" aria-live="polite"></p>
                             <p class="mt-2 text-xs text-slate-500">
                                 <i data-lucide="info" class="mr-1 inline-block h-3.5 w-3.5 align-text-bottom"></i>
                                 Tarif final + estimasi sampai akan dihitung otomatis lewat Agenwebsite.com pada milestone berikutnya.
@@ -429,7 +429,7 @@
                                     ></option>
                                 </template>
                             </select>
-                            <p x-show="errors.installment_scheme" x-cloak x-text="errors.installment_scheme" class="mt-1.5 text-xs font-medium text-rose-600"></p>
+                            <p x-text="errors.installment_scheme || '\u00A0'" class="mt-1.5 min-h-[1.25rem] text-xs font-medium text-rose-600" :class="errors.installment_scheme ? 'opacity-100' : 'opacity-0'" aria-live="polite"></p>
                         </div>
 
                         {{-- Jadwal preview --}}
