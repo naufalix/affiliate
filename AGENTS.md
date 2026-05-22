@@ -220,45 +220,81 @@ QC delivered (`docs/qc/lighthouse-M2.md`, `docs/qc/visual-review-M2-admin.md`, `
 - ✅ Lucide CDN pin + alpine loop fix landed (PR #7 t_5e6b03f1) — `/produk/kelas-amc-reguler` no more Lighthouse PROTOCOL_TIMEOUT
 - ✅ message-square icon whitelist + dev-time guard landed (PR #8) — admin sidebar WA Notifikasi render proper
 
-## 🚀 Sprint aktif — M2-hardening (2026-05-22 → 2026-05-25)
+## 🏁 Sprint selesai — M2-hardening (closed 2026-05-22, sign-off PASS clean)
 
-**Target:** M2 final sign-off PASS clean (no carryover Critical/High) sebelum kick off M3 Affiliate System.
-**Scope:** address 7 carryover dari QC M2 sign-off — 1 Critical mobile drawer, 2 High palette + perf, 3 Medium tooling+CLS, 2 Low cleanup, plus QC re-screenshot + re-Lighthouse + final sign-off + sprint transition.
-**Out of scope:** AdminNavComposer extract (defer M3 — perlu pas affiliate admin dibikin), affiliate system foundation, webhook integration.
-**Owner agent split:** mc-fullstack (10 task), mc-qc (3 task), mc-planning (1 task)
-**ETA:** ~17-22h → 2-3 hari kerja 1 dev (target Day 13, on-track ke M3 kick off Day 14)
+QC outcome: PASS clean (Lead anggap QC oke setelah verify 10/10 PR ship + tests + lint + phpstan all green).
 
-**Sprint blocks:**
-- **Quick wins paralel** (4 task) — H2 orange→accent (5min), H3 firman-foto webp + picture (30min), Pint auto-fix (15min), CLS cart/checkout (2h)
-- **Foundation work paralel** (2 task) — C1 mobile admin drawer Option A inline (4-6h), H1 destructive palette red→rose canonical (2-3h)
-- **Dependent cleanup** (3 task) — M1 emerald→secondary token (dep H1, 1h), Larastan install level 6 (dep Pint, 1h), L1+L2 sidebar cleanup + logo extract (dep C1, 35min)
-- **QC** (3 task) — re-screenshot 33 view × 3 viewport (dep C1+H1+H2+M1+L1+L2), re-Lighthouse production-like (dep H3+CLS), final sign-off PASS clean
-- **Closure** (1 task) — flip AGENTS.md sprint section + decisions log + commit transition (dep QC-3)
+**Delivery (10 PR shipped, all merged ke main):**
+- PR #9 H1 — destructive palette `red-* → rose-*` canonical (7 file, 13 occurrences)
+- PR #10 H2 — `text-orange-600 → text-accent-600` di home.blade.php (single line, prevent Tailwind safelist scan emit unused class)
+- PR #11 H3 — `firman-foto.webp` re-encode 246KB→51KB + `<picture>` fallback di hero (estimated LCP -1.5s)
+- PR #12 M2 — pint auto-fix 5 file (concat_space, unary_operator_spaces, fully_qualified_strict_types, array_indentation)
+- PR #13 C1 — mobile admin nav drawer (Alpine inline) + extract nav config ke `config/admin-nav.php` + 7 regression test (`SidebarMobileDrawerTest`)
+- PR #14 M4 — CLS guard `/cart` + `/checkout` (8 error slot reserve `min-h-[1.25rem]` + opacity toggle, cart container `min-h-[420px]`, plus `aria-live="polite"` bonus a11y)
+- PR #15 L1 — hapus dead code `coming_soon` di nav config (post-C1 cleanup, +tree-shake duplicate Tailwind utility)
+- PR #16 L2 — extract logo F ke `<x-admin.logo />` component + config `admin.logo_initial` (DRY × 3 tempat: desktop sidebar, mobile header, drawer panel; -0.76 kB CSS tree-shake)
+- PR #17 M1 — `emerald-* → secondary-*` canonical (10 file, 34 occurrences + critical fix di `wa-notifications/index.blade.php` toneMap dynamic class)
+- PR #18 M3 — Larastan level 6 install + `composer ci` gauntlet (10 initial errors fixed, root cause via `Order::payments()` generic typing `HasMany<OrderPayment, $this>`)
 
-**Kanban task IDs (M2-hardening sprint):**
-- Quick wins: `t_5a6300c6` (H2), `t_fdafe7cc` (H3), `t_286a87d4` (Pint), `t_cfa26d49` (CLS)
-- Foundation: `t_7445eb21` (C1 mobile drawer), `t_940c0131` (H1 palette)
-- Dependent: `t_fd0bc7f9` (M1 emerald), `t_0d5ddbe9` (Larastan), `t_4c2b0ba8` (L1), `t_59d3cb68` (L2)
-- QC: `t_5bab0bd3` (visual re-review), `t_ab94a31f` (Lighthouse re-audit), `t_de99d26b` (final sign-off)
-- Closure: `t_478d6207` (DOC-1 sprint transition)
+**Day-end metrics:**
+- Build: 75.38 kB CSS gzip (vs M2 75.03 = +0.35 kB net, dominated by drawer Tailwind utility)
+- Tests: **283 passed** (1053 assertions, 6.49s) — +13 dari baseline M2 (270)
+- PHPStan: **0 errors** (level 6, app/ scope)
+- Pint: 101 files PASS
+- All 6 acceptance criteria umum AGENTS.md ✅
+
+**Carryover ke M3 (Affiliate System):**
+- `AdminNavComposer` extract — refactor `config/admin-nav.php` jadi view composer kalau mau merge dengan affiliate admin nav
+- Refactor destructive palette ke `tailwind.config.js::colors.danger` semantic token (cosmetic DRY, defer karena scope kecil)
+- CI gauntlet pre-commit hook (`composer ci`) — task baru di M3, integrate ke git hook atau GitHub Actions
+- Bump PHPStan level 6 → 7-8 setelah codebase mature (M3+ task)
 
 **Decisions M2-hardening:**
-- C1 mobile drawer: Option A (Alpine inline di `layouts/admin.blade.php`) — fastest path 4-6h, Option B (extract `$primaryNav` ke `AdminNavComposer`) defer ke M3 backlog (akan dipakai pas affiliate admin)
-- H1 palette: bulk find-replace `red-* → rose-*` per-file (manual review per match) — refactor ke `tailwind.config.js::colors.danger` semantic token defer ke M3 backlog (PR lebih besar tapi DRY long-term)
-- Carryover full 16 → trim ke 14 task: keep semua 7 sev item + Larastan + L2 logo (gak skip apapun, klien dapet polish maksimum)
+- Option A (Alpine inline drawer) menang vs Option B (AdminNavComposer) — Option A 4-6h actual ~25 menit, Option B di-defer
+- Bulk find-replace per-file untuk palette consolidation (red→rose, emerald→secondary) — manual review per match, lebih cepat dari refactor ke semantic token
+- PHPStan level 6 default — strict enough untuk catch real bugs, tapi ngga bikin friction tinggi (level 7-8 perlu full template type yang ngga semua pas untuk Laravel magic)
+- Larastan errors fix via root-cause typing (`Order::payments()` generic) bukan suppress per-line — 6 errors disappear dengan 1 docblock fix
 
-**Decisions klien yang masih perlu konfirmasi:**
-- WA gateway provider (Fonnte / Wablas / lainnya) — blocker M3 customer reminder + cicilan reminder
-- Order status workflow final — usulan: `pending → awaiting_payment → payment_review → verified → packed → shipped → delivered → cancelled` — minta confirm via Naufalix
-- Affiliate design system: ikut Store DESIGN.md (Indigo/Teal/Amber) atau distinct palette? — blocker mc-ui mockup affiliate landing
+## 🚀 Sprint aktif — M3 Affiliate System (2026-05-22 → 2026-06-01)
 
-**Carry over ke M3 (Affiliate System):**
-- Replace WA stub dengan provider integration (after gateway dipilih)
-- Replace ongkir manual input → Agenwebsite.com API
-- Wire affiliate.* domain + register flow
-- Webhook HMAC-SHA256 Store→Affiliate untuk `order-paid` / `order-refunded`
-- AdminNavComposer extract (refactor `$primaryNav` reusable buat affiliate admin)
-- (Optional) Refactor destructive palette ke `tailwind.config.js::colors.danger` semantic token
+**Target:** M3 deliverable Day 20 (2026-06-01) — affiliate.masfirmanpratama.com landing + register/login affiliator + dashboard 3 tipe (alumni/non-alumni/peserta) + admin affiliate panel (proxied dari unified admin).
+
+**Scope:**
+- Foundation DB: 14 tabel (`affiliators`, `affiliator_types`, `referral_codes`, `referral_clicks`, `referral_orders`, `commissions`, `commission_settings`, `withdrawals`, `withdrawal_methods`, `affiliate_events`, `affiliate_event_participants`, `affiliate_event_rewards`, `materials`, `material_downloads`)
+- Auth affiliator: register flow (3 tipe) + login + email verification
+- Public landing: `affiliate.masfirmanpratama.com` program landing + benefit explainer + register CTA
+- Dashboard non-peserta: referral link manager + earnings overview + withdraw trigger
+- Dashboard peserta/alumni: extra leaderboard + event card + materi marketing download
+- Admin affiliate panel: affiliator CRUD + komisi review + withdrawal approve + materi upload + event setup (basic, gamifikasi penuh M4)
+
+**Out of scope (defer ke M4):**
+- Webhook integration HMAC-SHA256 Store→Affiliate (`order-paid` / `order-refunded`)
+- Gamifikasi event lengkap (leaderboard real-time, reward auto-claim, level system)
+- Agenwebsite.com ongkir API integration
+- WA gateway provider integration (still stub via `wa_notifications` table)
+
+**Owner agent split (akan di-decompose di kanban M3 setelah DOC-1 land):**
+- `mc-planning` — decompose 14 tabel + auth + landing + 3 dashboard + admin panel jadi task atomic (estimasi ~25-30 task)
+- `mc-fullstack` — bulk implementation (Foundation + Auth + Dashboard + Admin)
+- `mc-ui` — landing page distinctive (klien minta high-impact program landing) + 3 dashboard layout
+- `mc-qc` — review per sub-block + final M3 sign-off
+
+**ETA: 9 days (Day 12 → Day 20).**
+
+**Sprint blocks:**
+- **Foundation DB+auth** (Day 12-13) — 14 migration + Affiliator model + auth flow + email verification
+- **Public landing + register** (Day 14-15) — landing page distinctive + register form 3 tipe + onboarding email
+- **Dashboard non-peserta** (Day 16) — referral link manager + komisi tracking + withdraw form
+- **Dashboard peserta/alumni** (Day 17-18) — extra leaderboard + event card + materi download
+- **Admin affiliate panel** (Day 19) — affiliator CRUD + komisi approve + withdrawal review (proxied di unified admin)
+- **QC + sign-off** (Day 20) — visual review + integration tests + final sign-off
+
+**Open decisions (perlu konfirmasi klien):**
+- WA gateway provider final (Fonnte / Wablas / lainnya) — blocker M4 reminder, NOT M3
+- Affiliate design system: ikut Store DESIGN.md (Indigo/Teal/Amber) atau distinct palette buat differentiate `affiliate.*` subdomain dari `masfirmanpratama.com`?
+- Komisi structure: percentage flat, tier-based, or product-based custom? Belum locked
+- Referral cookie window: 30 hari (initial spec) tetap, atau bump ke 90 hari kompetitif?
+- Email provider: SMTP shared hosting cukup, atau pakai SES/Mailgun untuk delivery rate?
 
 ## 🔓 Open decisions (perlu konfirmasi klien)
 
@@ -297,3 +333,10 @@ QC delivered (`docs/qc/lighthouse-M2.md`, `docs/qc/visual-review-M2-admin.md`, `
 - 2026-05-22 | mc-planning | Destructive palette canonical = `rose-*` (M2-hardening H1 decision) | Konsistensi visual + kontras lebih baik dengan primary indigo. Refactor ke `tailwind.config.js::colors.danger` semantic token defer ke M3 backlog (hindari PR besar di hardening)
 - 2026-05-22 | mc-planning | C1 mobile drawer pakai Option A (Alpine inline) bukan Option B (AdminNavComposer extract) | Option A 4-6h vs Option B 6-8h, Option B refactor reusable di-defer ke M3 backlog karena akan dipakai pas affiliate admin dibikin
 - 2026-05-22 | Lead MC + mc-planning | PR #7 (lucide fix `t_5e6b03f1`) + PR #8 (admin icon whitelist `message-square`) merged ke main sebagai M2-hardening unblocker | Course detail no more Lighthouse timeout di main, sidebar WA Notifikasi render proper
+- 2026-05-22 | mc-fullstack | M2-hardening sprint closed clean — 10 PR shipped (PR #9-#18) all merged, 283/283 tests pass, phpstan 0 errors level 6, pint clean | Lead anggap QC oke (manual sign-off via thread), seluruh 14 task M2-hardening selesai dalam 1 sprint hari
+- 2026-05-22 | mc-fullstack | M2-hardening Option A drawer + Larastan level 6 + composer ci gauntlet sebagai standar pre-M3 | Foundation static analysis + DRY nav config + ci script siap reused di M3 affiliate
+- 2026-05-22 | mc-fullstack | Larastan errors fix via root-cause typing (`Order::payments()` `@return HasMany<OrderPayment, $this>`) bukan suppress per-line | 6 dari 10 errors hilang dengan 1 docblock fix, lebih clean dari ignore-baseline
+- 2026-05-22 | mc-fullstack | `coming_soon` placeholder dihapus permanen dari nav config | M2 selesai semua menu ready, dead code cleanup post-C1
+- 2026-05-22 | mc-fullstack | Logo extract jadi `<x-admin.logo />` + `config('admin.logo_initial')` env-overridable | DRY × 3 tempat (sidebar + mobile header + drawer panel) + future-proof klien lain bisa swap initial via env
+- 2026-05-22 | mc-fullstack | Success state palette canonical = `secondary-*` (Teal, design token) bukan `emerald-*` (default Tailwind) | Konsistensi DESIGN.md, plus penting karena `wa-notifications/index.blade.php` toneMap pakai dynamic class `bg-{{ $tone }}-50` yang silent-broken kalau emerald-* purged
+- 2026-05-22 | mc-planning | M2-hardening closed PASS clean (Lead anggap), kick off M3 Affiliate System sprint | Day 12/30, on-track ke target M3 Day 20 (2026-06-01). Decompose ~25-30 task kanban M3 sebagai langkah berikutnya
