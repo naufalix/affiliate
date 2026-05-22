@@ -10,12 +10,11 @@
     - $linkClickHandler: extra Alpine attribute string (e.g. "@click=\"open = false\"")
                         untuk drawer auto-close on link click. Default kosong.
 
-    Source data: config/admin-nav.php (config('admin-nav.primary' / 'coming_soon')).
+    Source data: config/admin-nav.php (config('admin-nav.primary')).
 --}}
 @php
     $linkClickHandler ??= '';
     $primaryNav = config('admin-nav.primary', []);
-    $comingSoon = config('admin-nav.coming_soon', []);
 @endphp
 
 @foreach ($primaryNav as $item)
@@ -27,14 +26,3 @@
         {{ $item['label'] }}
     </a>
 @endforeach
-
-@if (! empty($comingSoon))
-    <p class="px-3 pt-5 pb-1 text-xs font-medium uppercase tracking-wide text-slate-400">Coming soon</p>
-
-    @foreach ($comingSoon as $item)
-        <span class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-slate-400 cursor-not-allowed select-none">
-            <x-admin.icon :name="$item['icon']" class="h-4 w-4 shrink-0 opacity-60" />
-            {{ $item['label'] }}
-        </span>
-    @endforeach
-@endif

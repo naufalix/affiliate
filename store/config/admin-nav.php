@@ -11,7 +11,6 @@ return [
     | - resources/views/layouts/admin.blade.php (mobile drawer)
     |
     | `primary` = nav links utama (semua viewport)
-    | `coming_soon` = placeholder disabled (akan jadi link saat fase berikutnya)
     |
     */
 
@@ -23,6 +22,4 @@ return [
         ['key' => 'installments', 'label' => 'Skema Cicilan', 'icon' => 'layers', 'route' => 'admin.installment-schemes.index', 'enabled' => true],
         ['key' => 'settings', 'label' => 'Settings', 'icon' => 'settings', 'route' => 'admin.settings.index', 'enabled' => true],
     ],
-
-    'coming_soon' => [],
 ];
