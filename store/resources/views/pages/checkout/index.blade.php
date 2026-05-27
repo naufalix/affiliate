@@ -80,12 +80,19 @@
         </p>
 
         {{-- ========================================================== --}}
+        {{-- Checkout state container — reserve min-height to prevent CLS --}}
+        {{-- (empty/form toggle + cart items hydrate post-Alpine boot)    --}}
+        {{-- M2-hardening H1-new: parent reservation, mirror cart M4      --}}
+        {{-- ========================================================== --}}
+        <div class="mt-10 min-h-[1100px] lg:min-h-[760px]">
+
+        {{-- ========================================================== --}}
         {{-- Empty cart guard                                             --}}
         {{-- ========================================================== --}}
         <div
             x-show="$store.cart.isEmpty"
             x-cloak
-            class="mt-10 glass rounded-3xl border border-white/60 p-10 text-center sm:p-16"
+            class="glass rounded-3xl border border-white/60 p-10 text-center sm:p-16"
         >
             <div class="mx-auto inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-primary-50 text-primary-600">
                 <i data-lucide="shopping-cart" class="h-10 w-10"></i>
@@ -488,8 +495,8 @@
                     <div class="panel-card glass hover-lift sticky top-28 rounded-3xl border border-white/60 p-6 sm:p-8">
                         <h2 class="text-2xl font-bold leading-tight text-slate-900">Ringkasan Pesanan</h2>
 
-                        {{-- Items list --}}
-                        <ul class="mt-5 space-y-3 max-h-72 overflow-y-auto pr-1">
+                        {{-- Items list — min-h reserved (M2-hardening H1-new): sessionStorage hydration --}}
+                        <ul class="mt-5 max-h-72 min-h-[120px] space-y-3 overflow-y-auto pr-1">
                             <template x-for="item in $store.cart.items" :key="item.slug">
                                 <li class="flex items-start gap-3 rounded-xl bg-white/60 p-3">
                                     <div class="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-slate-100">
@@ -622,6 +629,8 @@
             <input type="hidden" name="cart_json" :value="JSON.stringify($store.cart.items)">
             <input type="hidden" name="cart_total" :value="grandTotal">
         </form>
+
+        </div>{{-- /M2-hardening H1-new: checkout state container reservation --}}
     </section>
 
     {{-- ────────────────────────────────────────────────────────── --}}
