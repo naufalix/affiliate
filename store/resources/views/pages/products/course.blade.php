@@ -84,7 +84,9 @@
                 <span class="text-primary-600 font-bold truncate max-w-[200px] sm:max-w-none">{{ $categoryLabel }}</span>
             </nav>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+            {{-- Grid parent reservation (M2-hardening H2-new): main content + sticky aside --}}
+            {{-- Mobile stack vertical (hero + tabs + price card), desktop 8/4 split --}}
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 min-h-[1800px] lg:min-h-[1200px]">
 
                 {{-- ─── LEFT: Konten utama ───────────────────────────────── --}}
                 <div class="lg:col-span-8 space-y-10">
